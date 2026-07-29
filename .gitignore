@@ -2,3 +2,10 @@ node_modules/
 blog.db-shm
 blog.db-wal
 *.db
+node_modules/
+blog.db-shm
+blog.db-wal
+*.db
+node_modules/
+blog.db-shm
+blog.db-wal
