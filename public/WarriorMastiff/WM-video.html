@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Tutorial Library</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f6f9;
+            color: #1e293b;
+        }
+
+        /* ===== 头部 ===== */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: white;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 6px;
+        }
+        .header-top .left { display: flex; align-items: center; gap: 12px; }
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .header .sub {
+            color: #64748b;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+        .header .file-path {
+            background: #f1f5f9;
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-family: monospace;
+            color: #475569;
+            display: inline-block;
+            margin-top: 6px;
+        }
+        .btn-back {
+            padding: 8px 20px;
+            background-color: #e9edf2;
+            color: #1e293b;
+            border: none;
+            border-radius: 40px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            font-weight: 500;
+            transition: 0.2s;
+            font-family: inherit;
+        }
+        .btn-back:hover { background-color: #d1d9e3; }
+
+        /* ===== 语言切换器 ===== */
+        .lang-switcher {
+            position: relative;
+            flex-shrink: 0;
+        }
+        .lang-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: white;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #1e293b;
+            cursor: pointer;
+            transition: background 0.15s, border-color 0.15s;
+            user-select: none;
+            font-family: inherit;
+        }
+        .lang-btn:hover {
+            background: #f0f2f5;
+            border-color: #b0b8c4;
+        }
+        .lang-btn .arrow {
+            font-size: 11px;
+            color: #8b949e;
+            transition: transform 0.2s;
+        }
+        .lang-btn.open .arrow {
+            transform: rotate(180deg);
+        }
+        .lang-menu {
+            position: absolute;
+            top: calc(100% + 6px);
+            right: 0;
+            min-width: 100px;
+            background: white;
+            border: 1px solid #d0d7de;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+            padding: 6px 0;
+            display: none;
+            z-index: 200;
+            overflow: hidden;
+        }
+        .lang-menu.show {
+            display: block;
+        }
+        .lang-menu a {
+            display: block;
+            padding: 8px 18px;
+            font-size: 13px;
+            color: #1e293b;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.12s;
+            font-weight: 450;
+        }
+        .lang-menu a:hover {
+            background: #f0f2f5;
+        }
+        .lang-menu a.active {
+            background: #e9ecf0;
+            font-weight: 600;
+        }
+
+        /* ===== 维护提示 ===== */
+        .maintain-tip {
+            background: #fefce8;
+            border: 1px solid #fde68a;
+            border-radius: 12px;
+            padding: 14px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            font-size: 14px;
+            color: #92400e;
+        }
+        .maintain-tip code {
+            background: #fef3c7;
+            padding: 2px 10px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        .maintain-tip .tip-link {
+            color: #2563eb;
+            text-decoration: underline;
+            cursor: pointer;
+            margin-left: auto;
+            background: none;
+            border: none;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        /* ===== 搜索和筛选 ===== */
+        .filter-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            background: white;
+            padding: 14px 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+            align-items: center;
+        }
+        .filter-bar .search-input {
+            flex: 1;
+            min-width: 160px;
+            padding: 8px 14px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 30px;
+            font-size: 14px;
+            outline: none;
+            transition: 0.2s;
+        }
+        .filter-bar .search-input:focus { border-color: #3b82f6; }
+        .filter-group {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 5px 14px;
+            background: #f1f5f9;
+            border: 1.5px solid transparent;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: 0.2s;
+            white-space: nowrap;
+            font-family: inherit;
+        }
+        .filter-btn:hover { background: #e2e8f0; }
+        .filter-btn.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+        .filter-bar .stats {
+            font-size: 13px;
+            color: #64748b;
+            margin-left: auto;
+        }
+
+        /* ===== 视频卡片网格 ===== */
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 16px;
+            margin-top: 4px;
+        }
+        .video-card {
+            background: white;
+            border-radius: 12px;
+            padding: 18px 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            border-left: 4px solid #3b82f6;
+            transition: 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .video-card:hover {
+            box-shadow: 0 8px 20px rgba(0,0,0,0.10);
+            transform: translateY(-2px);
+        }
+        .video-card .card-title {
+            font-weight: 600;
+            font-size: 16px;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .video-card .card-title .platform-tag {
+            font-size: 11px;
+            background: #dbeafe;
+            color: #1d4ed8;
+            padding: 0 12px;
+            border-radius: 30px;
+            font-weight: 500;
+        }
+        .video-card .card-meta {
+            font-size: 13px;
+            color: #64748b;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .video-card .card-meta .category-badge {
+            background: #f1f5f9;
+            padding: 0 10px;
+            border-radius: 30px;
+            font-size: 12px;
+        }
+        .video-card .card-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 4px;
+            flex-wrap: wrap;
+        }
+        .video-card .btn-watch {
+            padding: 8px 20px;
+            background: #0f172a;
+            color: white;
+            text-decoration: none;
+            border-radius: 40px;
+            font-size: 13px;
+            font-weight: 500;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .video-card .btn-watch:hover {
+            background: #1e293b;
+            transform: scale(0.97);
+        }
+        .video-card .btn-copy {
+            padding: 8px 14px;
+            background: #f1f5f9;
+            border: none;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: 0.2s;
+            font-family: inherit;
+        }
+        .video-card .btn-copy:hover { background: #e2e8f0; }
+        .video-card .btn-preview {
+            padding: 8px 14px;
+            background: #e0f2fe;
+            border: none;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 13px;
+            color: #0369a1;
+            transition: 0.2s;
+            font-family: inherit;
+        }
+        .video-card .btn-preview:hover { background: #bae6fd; }
+
+        .empty-state {
+            text-align: center;
+            color: #94a3b8;
+            padding: 50px 20px;
+            background: white;
+            border-radius: 12px;
+            grid-column: 1 / -1;
+        }
+        .empty-state .icon { font-size: 48px; display: block; margin-bottom: 12px; }
+
+        /* ===== 预览模态框 ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.45);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-content {
+            background: white;
+            max-width: 560px;
+            width: 100%;
+            border-radius: 20px;
+            padding: 32px 28px 28px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+            position: relative;
+            animation: modalFade 0.25s ease;
+        }
+        @keyframes modalFade {
+            from { opacity: 0; transform: scale(0.96) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .modal-content .modal-close {
+            position: absolute;
+            top: 14px;
+            right: 18px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #94a3b8;
+            background: none;
+            border: none;
+            transition: 0.2s;
+        }
+        .modal-content .modal-close:hover { color: #0f172a; }
+        .modal-content .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 8px;
+            padding-right: 30px;
+        }
+        .modal-content .modal-platform {
+            display: inline-block;
+            background: #dbeafe;
+            color: #1d4ed8;
+            padding: 2px 14px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+        .modal-content .modal-detail {
+            font-size: 14px;
+            color: #475569;
+            line-height: 1.8;
+        }
+        .modal-content .modal-detail strong { color: #0f172a; }
+        .modal-content .modal-url {
+            background: #f1f5f9;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            word-break: break-all;
+            color: #2563eb;
+            margin: 12px 0 16px;
+            font-family: monospace;
+        }
+        .modal-content .btn-watch-large {
+            display: inline-block;
+            padding: 10px 32px;
+            background: #0f172a;
+            color: white;
+            text-decoration: none;
+            border-radius: 40px;
+            font-weight: 500;
+            font-size: 15px;
+            transition: 0.2s;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .modal-content .btn-watch-large:hover {
+            background: #1e293b;
+            transform: scale(0.97);
+        }
+
+        /* ===== 加载状态 ===== */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #94a3b8;
+        }
+        .loading .spinner {
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            border: 3px solid #e2e8f0;
+            border-top-color: #3b82f6;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        @media (max-width: 640px) {
+            .video-grid { grid-template-columns: 1fr; }
+            .filter-bar { flex-direction: column; }
+            .filter-bar .stats { margin-left: 0; }
+            .modal-content { padding: 24px 18px; }
+            .header h1 { font-size: 22px; }
+            .header-top { flex-direction: column; align-items: stretch; }
+            .header-top .left { justify-content: space-between; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="header-top">
+        <div class="left">
+            <a href="#" class="btn-back" id="backBtn" data-i18n="back" onclick="history.back(); return false;">← Back</a>
+        </div>
+        <div class="lang-switcher">
+            <button class="lang-btn" id="langBtn" onclick="toggleLangMenu()" aria-label="切换语言">
+                <span id="currentLangLabel">EN</span>
+                <span class="arrow">▾</span>
+            </button>
+            <div class="lang-menu" id="langMenu">
+                <a href="#" onclick="setLang('zh')" data-lang="zh">中文</a>
+                <a href="#" onclick="setLang('en')" data-lang="en">English</a>
+            </div>
+        </div>
+    </div>
+    <h1>
+        <span id="pageTitle" data-i18n="pageTitle">Video Tutorial Library</span>
+        <span style="font-size:14px; font-weight:400; color:#64748b; background:#f1f5f9; padding:2px 14px; border-radius:30px;">v2.0</span>
+    </h1>
+    <div class="sub" id="maintainSub" data-i18n="maintainSub">
+        Maintenance: edit <strong>videos.json</strong> file to update content
+        <div class="file-path">/videos.json</div>
+    </div>
+</div>
+
+<!-- 维护提示 -->
+<div class="maintain-tip" id="maintainTip">
+    <span id="tipGuide" data-i18n="tipGuide">[Tip] Maintenance guide:</span>
+    <span id="tipDesc" data-i18n="tipDesc">Find <code>videos.json</code> in the project root, add or modify video data in JSON format, save and refresh the page to see updates.</span>
+    <button class="tip-link" id="tipExport" data-i18n="tipExport" onclick="exportData()">↓ Download current data as template</button>
+</div>
+
+<!-- 搜索和分类筛选 -->
+<div class="filter-bar">
+    <input type="text" class="search-input" id="searchInput" placeholder="Search video name or tags..." oninput="applyFilters()" data-i18n-placeholder="searchPlaceholder">
+    <div class="filter-group" id="filterGroup">
+        <button class="filter-btn active" data-category="all" id="filterAllBtn" onclick="setCategory('all')">All</button>
+    </div>
+    <span class="stats" id="totalCount">Total 0 videos</span>
+</div>
+
+<!-- 视频卡片列表 -->
+<div class="video-grid" id="videoGrid">
+    <div class="loading">
+        <div class="spinner"></div>
+        <p style="margin-top:12px;" id="loadingText" data-i18n="loading">Loading video data...</p>
+    </div>
+</div>
+
+<!-- 预览模态框 -->
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal()">✕</button>
+        <div class="modal-title" id="modalTitle">Video Title</div>
+        <span class="modal-platform" id="modalPlatform">Platform</span>
+        <div class="modal-detail" id="modalDetail">
+            <p><strong id="modalCategoryLabel">Category:</strong> <span id="modalCategory">-</span></p>
+            <p><strong id="modalDurationLabel">Duration:</strong> <span id="modalDuration">-</span></p>
+            <p><strong id="modalDateLabel">Upload date:</strong> <span id="modalDate">-</span></p>
+            <p><strong id="modalTagsLabel">Tags:</strong> <span id="modalTags">-</span></p>
+        </div>
+        <div class="modal-url" id="modalUrl">https://example.com</div>
+        <a href="#" target="_blank" class="btn-watch-large" id="modalWatchBtn">▶ Watch</a>
+    </div>
+</div>
+
+<script>
+// ============================================================
+// 1. 翻译字典
+// ============================================================
+const I18N = {
+    en: {
+        back: '← Back',
+        pageTitle: 'Video Tutorial Library',
+        maintainSub: 'Maintenance: edit <strong>videos.json</strong> file to update content',
+        tipGuide: '[Tip] Maintenance guide:',
+        tipDesc: 'Find <code>videos.json</code> in the project root, add or modify video data in JSON format, save and refresh the page to see updates.',
+        tipExport: '↓ Download current data as template',
+        searchPlaceholder: 'Search video name or tags...',
+        filterAll: 'All',
+        totalCount: 'Total {count} videos',
+        loading: 'Loading video data...',
+        emptyTitle: 'No videos found',
+        emptyHint: 'Edit videos.json to add content',
+        watch: 'Watch',
+        copy: 'Copy',
+        preview: 'Preview',
+        modalCategory: 'Category:',
+        modalDuration: 'Duration:',
+        modalDate: 'Upload date:',
+        modalTags: 'Tags:',
+        modalWatch: '▶ Watch on {platform}',
+        copied: 'Link copied to clipboard!',
+    },
+    zh: {
+        back: '← 返回',
+        pageTitle: '视频教程库',
+        maintainSub: '维护方式：编辑 <strong>videos.json</strong> 文件即可更新内容',
+        tipGuide: '[提示] 维护指南：',
+        tipDesc: '在项目根目录找到 <code>videos.json</code> 文件，按照 JSON 格式添加或修改视频数据，保存后刷新页面即可看到更新。',
+        tipExport: '↓ 下载当前数据作为模板',
+        searchPlaceholder: '搜索视频名称或标签...',
+        filterAll: '全部',
+        totalCount: '共 {count} 个视频',
+        loading: '正在加载视频数据...',
+        emptyTitle: '没有找到匹配的视频',
+        emptyHint: '提示：编辑 videos.json 文件添加内容',
+        watch: '观看',
+        copy: '复制',
+        preview: '预览',
+        modalCategory: '分类：',
+        modalDuration: '时长：',
+        modalDate: '上传日期：',
+        modalTags: '标签：',
+        modalWatch: '▶ 前往 {platform} 观看',
+        copied: '链接已复制到剪贴板！',
+    }
+};
+
+// ============================================================
+// 2. 状态
+// ============================================================
+let currentLang = 'en';
+let videoData = [];
+let currentCategory = 'all';
+
+function t(key, params) {
+    let text = I18N[currentLang]?.[key] || key;
+    if (params) {
+        for (let k in params) {
+            text = text.replace(`{${k}}`, params[k]);
+        }
+    }
+    return text;
+}
+
+function getLangLabel() {
+    return currentLang === 'en' ? 'EN' : '中文';
+}
+
+// ============================================================
+// 3. 语言切换
+// ============================================================
+function setLang(lang) {
+    if (lang === currentLang) {
+        closeLangMenu();
+        return;
+    }
+    currentLang = lang;
+    localStorage.setItem('wm_video_lang', lang);
+    renderStaticTexts();
+    buildCategoryFilters();
+    renderVideos();
+    closeLangMenu();
+}
+
+function toggleLangMenu() {
+    const menu = document.getElementById('langMenu');
+    const btn = document.getElementById('langBtn');
+    menu.classList.toggle('show');
+    btn.classList.toggle('open');
+}
+
+function closeLangMenu() {
+    const menu = document.getElementById('langMenu');
+    const btn = document.getElementById('langBtn');
+    menu.classList.remove('show');
+    btn.classList.remove('open');
+}
+
+document.addEventListener('click', function(e) {
+    const switcher = document.querySelector('.lang-switcher');
+    if (switcher && !switcher.contains(e.target)) {
+        closeLangMenu();
+    }
+});
+
+// ============================================================
+// 4. 渲染静态文本
+// ============================================================
+function renderStaticTexts() {
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        let val = t(key);
+        if (val !== undefined) {
+            if (el.hasChildNodes() && el.children.length > 0) {
+                let textNodeFound = false;
+                el.childNodes.forEach(node => {
+                    if (node.nodeType === Node.TEXT_NODE && node.textContent.trim() !== '') {
+                        node.textContent = val;
+                        textNodeFound = true;
+                    }
+                });
+                if (!textNodeFound) {
+                    el.appendChild(document.createTextNode(val));
+                }
+            } else {
+                el.textContent = val;
+            }
+        }
+    });
+
+    const searchInput = document.getElementById('searchInput');
+    const phKey = searchInput.getAttribute('data-i18n-placeholder');
+    if (phKey) {
+        searchInput.placeholder = t(phKey);
+    }
+
+    document.getElementById('currentLangLabel').textContent = getLangLabel();
+    document.querySelectorAll('.lang-menu a').forEach(a => {
+        const lang = a.getAttribute('data-lang');
+        a.classList.toggle('active', lang === currentLang);
+    });
+
+    const allBtn = document.querySelector('.filter-btn[data-category="all"]');
+    if (allBtn) allBtn.textContent = t('filterAll');
+}
+
+// ============================================================
+// 5. 数据加载
+// ============================================================
+async function loadVideosFromFile() {
+    const grid = document.getElementById('videoGrid');
+    try {
+        const response = await fetch('videos.json?' + Date.now());
+        if (!response.ok) {
+            console.warn('videos.json not found, using default data');
+            videoData = getDefaultData();
+            buildCategoryFilters();
+            renderVideos();
+            return;
+        }
+        const data = await response.json();
+        if (Array.isArray(data) && data.length > 0) {
+            videoData = data;
+            let maxId = 0;
+            videoData.forEach(item => {
+                if (!item.id) item.id = ++maxId;
+                if (item.id > maxId) maxId = item.id;
+                if (item.tags && typeof item.tags === 'string') {
+                    item.tags = item.tags.split(',').map(s => s.trim());
+                }
+                if (!item.tags) item.tags = [];
+            });
+        } else {
+            videoData = getDefaultData();
+        }
+        buildCategoryFilters();
+        renderVideos();
+    } catch (error) {
+        console.error('Load error:', error);
+        videoData = getDefaultData();
+        buildCategoryFilters();
+        renderVideos();
+    }
+}
+
+function getDefaultData() {
+    return [
+        {
+            id: 1,
+            name: "HTML & CSS 零基础入门",
+            platform: "B站",
+            url: "https://www.bilibili.com/video/BV1Yt411Y7GE/",
+            category: "前端开发",
+            duration: "2小时18分",
+            uploadDate: "2026-01-10",
+            tags: ["入门", "HTML", "CSS"]
+        },
+        {
+            id: 2,
+            name: "JavaScript 完全解析",
+            platform: "YouTube",
+            url: "https://www.youtube.com/watch?v=W6NZfCO5SIk",
+            category: "JavaScript",
+            duration: "3小时42分",
+            uploadDate: "2026-01-12",
+            tags: ["进阶", "ES6"]
+        },
+        {
+            id: 3,
+            name: "Vue 3 组合式API实战",
+            platform: "B站",
+            url: "https://www.bilibili.com/video/BV1pz4y1S7bC/",
+            category: "前端框架",
+            duration: "1小时55分",
+            uploadDate: "2026-01-15",
+            tags: ["Vue", "实战"]
+        },
+        {
+            id: 4,
+            name: "Python 爬虫从零到部署",
+            platform: "B站",
+            url: "https://www.bilibili.com/video/BV1jE411Y7GQ/",
+            category: "Python",
+            duration: "1小时40分",
+            uploadDate: "2026-01-18",
+            tags: ["爬虫", "自动化"]
+        },
+        {
+            id: 5,
+            name: "Git 团队协作实战",
+            platform: "Vimeo",
+            url: "https://vimeo.com/707568146",
+            category: "开发工具",
+            duration: "48分钟",
+            uploadDate: "2026-01-20",
+            tags: ["Git", "协作"]
+        }
+    ];
+}
+
+// ============================================================
+// 6. 渲染视频卡片
+// ============================================================
+function renderVideos() {
+    const grid = document.getElementById('videoGrid');
+    const searchVal = document.getElementById('searchInput').value.toLowerCase().trim();
+
+    let filtered = videoData;
+    if (currentCategory !== 'all') {
+        filtered = filtered.filter(v => v.category === currentCategory);
+    }
+    if (searchVal) {
+        filtered = filtered.filter(v =>
+            v.name.toLowerCase().includes(searchVal) ||
+            (v.tags && v.tags.some(t => t.toLowerCase().includes(searchVal)))
+        );
+    }
+
+    document.getElementById('totalCount').textContent = t('totalCount', { count: filtered.length });
+
+    if (filtered.length === 0) {
+        grid.innerHTML = `
+            <div class="empty-state">
+                <span class="icon">📭</span>
+                <div>${t('emptyTitle')}</div>
+                <span style="font-size:13px; color:#94a3b8;">${t('emptyHint')}</span>
+            </div>
+        `;
+        return;
+    }
+
+    const watchText = t('watch');
+    const copyText = t('copy');
+    const previewText = t('preview');
+
+    grid.innerHTML = filtered.map(v => `
+        <div class="video-card">
+            <div class="card-title">
+                ${v.name}
+                <span class="platform-tag">${v.platform}</span>
+            </div>
+            <div class="card-meta">
+                <span>${v.category}</span>
+                <span>${v.duration}</span>
+                <span class="category-badge">${v.tags ? v.tags.slice(0, 2).map(t => '#' + t).join(' ') : ''}</span>
+            </div>
+            <div class="card-actions">
+                <a href="${v.url}" target="_blank" class="btn-watch">${watchText}</a>
+                <button class="btn-copy" onclick="copyLink('${v.url}')">${copyText}</button>
+                <button class="btn-preview" onclick="previewVideo(${v.id})">${previewText}</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+// ============================================================
+// 7. 分类筛选器
+// ============================================================
+function buildCategoryFilters() {
+    const categories = ['all', ...new Set(videoData.map(v => v.category))];
+    const group = document.getElementById('filterGroup');
+    const allLabel = t('filterAll');
+    group.innerHTML = categories.map(cat => `
+        <button class="filter-btn ${cat === currentCategory ? 'active' : ''}" 
+                data-category="${cat}" 
+                onclick="setCategory('${cat}')">
+            ${cat === 'all' ? allLabel : cat}
+        </button>
+    `).join('');
+}
+
+function setCategory(cat) {
+    currentCategory = cat;
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.category === cat);
+    });
+    renderVideos();
+}
+
+function applyFilters() {
+    renderVideos();
+}
+
+// ============================================================
+// 8. 预览模态框
+// ============================================================
+function previewVideo(id) {
+    const v = videoData.find(item => item.id === id);
+    if (!v) return;
+
+    document.getElementById('modalTitle').textContent = v.name;
+    document.getElementById('modalPlatform').textContent = v.platform;
+    document.getElementById('modalCategory').textContent = v.category || '-';
+    document.getElementById('modalDuration').textContent = v.duration || '-';
+    document.getElementById('modalDate').textContent = v.uploadDate || '-';
+    document.getElementById('modalTags').textContent = (v.tags && v.tags.length) ? v.tags.join('、') : '无';
+    document.getElementById('modalUrl').textContent = v.url;
+
+    const watchBtn = document.getElementById('modalWatchBtn');
+    watchBtn.href = v.url;
+    watchBtn.textContent = t('modalWatch', { platform: v.platform });
+
+    document.getElementById('modalCategoryLabel').textContent = t('modalCategory');
+    document.getElementById('modalDurationLabel').textContent = t('modalDuration');
+    document.getElementById('modalDateLabel').textContent = t('modalDate');
+    document.getElementById('modalTagsLabel').textContent = t('modalTags');
+
+    document.getElementById('modalOverlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+document.getElementById('modalOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+});
+
+// ============================================================
+// 9. 工具函数
+// ============================================================
+function copyLink(url) {
+    navigator.clipboard.writeText(url).then(() => {
+        alert(t('copied'));
+    }).catch(() => {
+        const input = document.createElement('input');
+        input.value = url;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('copy');
+        document.body.removeChild(input);
+        alert(t('copied'));
+    });
+}
+
+function exportData() {
+    const dataStr = JSON.stringify(videoData, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `videos_template.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+// ============================================================
+// 10. 初始化
+// ============================================================
+window.onload = function() {
+    const saved = localStorage.getItem('wm_video_lang');
+    if (saved === 'zh' || saved === 'en') {
+        currentLang = saved;
+    } else {
+        currentLang = 'en';
+    }
+    renderStaticTexts();
+    loadVideosFromFile();
+};
+
+// 暴露全局函数
+window.setLang = setLang;
+window.toggleLangMenu = toggleLangMenu;
+window.setCategory = setCategory;
+window.applyFilters = applyFilters;
+window.previewVideo = previewVideo;
+window.closeModal = closeModal;
+window.copyLink = copyLink;
+window.exportData = exportData;
+window.renderVideos = renderVideos;
+window.buildCategoryFilters = buildCategoryFilters;
+</script>
+</body>
+</html>

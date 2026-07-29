@@ -1,0 +1,20 @@
+[
+    {
+        "name": "HTML & CSS 零基础入门",
+        "platform": "B站",
+        "url": "https://www.bilibili.com/video/BV1Yt411Y7GE/",
+        "category": "前端开发",
+        "duration": "2小时18分",
+        "uploadDate": "2026-01-10",
+        "tags": ["入门", "HTML", "CSS"]
+    },
+    {
+        "name": "JavaScript 完全解析",
+        "platform": "YouTube",
+        "url": "https://www.youtube.com/watch?v=W6NZfCO5SIk",
+        "category": "JavaScript",
+        "duration": "3小时42分",
+        "uploadDate": "2026-01-12",
+        "tags": ["进阶", "ES6"]
+    }
+]

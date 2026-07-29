@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Software Downloads</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf_viewer.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+            color: #1e1e2f;
+        }
+
+        /* ===== 头部 ===== */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 4px;
+        }
+
+        .header-top h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: #1e1e2f;
+            margin: 0;
+        }
+
+        .header-sub {
+            font-size: 15px;
+            color: #6c757d;
+            margin-top: 2px;
+        }
+
+        /* ===== 语言切换器 ===== */
+        .lang-switcher {
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .lang-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: white;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #1e1e2f;
+            cursor: pointer;
+            transition: background 0.15s, border-color 0.15s;
+            user-select: none;
+            font-family: inherit;
+        }
+
+        .lang-btn:hover {
+            background: #f0f2f5;
+            border-color: #b0b8c4;
+        }
+
+        .lang-btn .arrow {
+            font-size: 11px;
+            color: #8b949e;
+            transition: transform 0.2s;
+        }
+
+        .lang-btn.open .arrow {
+            transform: rotate(180deg);
+        }
+
+        .lang-menu {
+            position: absolute;
+            top: calc(100% + 6px);
+            right: 0;
+            min-width: 100px;
+            background: white;
+            border: 1px solid #d0d7de;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.10);
+            padding: 6px 0;
+            display: none;
+            z-index: 200;
+            overflow: hidden;
+        }
+
+        .lang-menu.show {
+            display: block;
+        }
+
+        .lang-menu a {
+            display: block;
+            padding: 8px 18px;
+            font-size: 13px;
+            color: #1e1e2f;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.12s;
+            font-weight: 450;
+        }
+
+        .lang-menu a:hover {
+            background: #f0f2f5;
+        }
+
+        .lang-menu a.active {
+            background: #e9ecf0;
+            font-weight: 600;
+        }
+
+        /* ===== 返回按钮 ===== */
+        .back-row {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 18px;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 450;
+            transition: background 0.15s;
+            font-family: inherit;
+        }
+
+        .btn-back:hover {
+            background-color: #5a6268;
+        }
+
+        .btn-back .arrow-icon {
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        /* ===== 内容卡片 ===== */
+        .content-box {
+            background: white;
+            padding: 28px 30px 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .content-box h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1e1e2f;
+            margin: 0 0 16px 0;
+        }
+
+        /* ===== 文件列表 ===== */
+        .file-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .file-item:last-child {
+            border-bottom: none;
+        }
+
+        .file-info {
+            flex: 1;
+            min-width: 140px;
+        }
+
+        .file-name {
+            font-weight: 600;
+            color: #1e1e2f;
+            margin-bottom: 4px;
+            word-break: break-word;
+        }
+
+        .file-meta {
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .view-btn,
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 7px 16px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 450;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: background 0.15s;
+            font-family: inherit;
+        }
+
+        .view-btn {
+            background: #007bff;
+            color: white;
+        }
+        .view-btn:hover {
+            background: #0056b3;
+        }
+
+        .download-btn {
+            background: #28a745;
+            color: white;
+        }
+        .download-btn:hover {
+            background: #218838;
+        }
+
+        .empty-msg {
+            text-align: center;
+            color: #999;
+            padding: 30px 20px;
+            font-size: 15px;
+        }
+
+        .empty-msg.error {
+            color: #dc3545;
+        }
+
+        /* ===== 预览模态框 ===== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.78);
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 920px;
+            height: 90vh;
+            max-height: 90vh;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+        }
+
+        .modal-header {
+            padding: 14px 20px;
+            border-bottom: 1px solid #e9ecf0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8f9fa;
+            flex-shrink: 0;
+        }
+
+        .modal-header #previewTitle {
+            font-weight: 600;
+            font-size: 16px;
+            color: #1e1e2f;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 70%;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 26px;
+            line-height: 1;
+            cursor: pointer;
+            color: #6c757d;
+            padding: 0 6px;
+            transition: color 0.15s;
+        }
+        .close-btn:hover {
+            color: #1e1e2f;
+        }
+
+        .modal-body {
+            flex: 1;
+            overflow: auto;
+            padding: 20px;
+            background: #525659;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        #preview-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        #pdf-canvas {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            max-width: 100%;
+            height: auto;
+        }
+
+        .text-preview {
+            background: white;
+            padding: 24px 28px;
+            width: 100%;
+            max-width: 800px;
+            white-space: pre-wrap;
+            font-family: "SF Mono", "Menlo", "Monaco", monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            border-radius: 4px;
+            color: #1e1e2f;
+            overflow: auto;
+        }
+
+        .image-preview {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 4px;
+        }
+
+        .unsupported-msg {
+            color: white;
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+        }
+        .unsupported-msg h3 {
+            font-weight: 500;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+        .unsupported-msg p {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-bottom: 14px;
+        }
+        .unsupported-msg a {
+            color: #6cb4ff;
+            text-decoration: none;
+        }
+        .unsupported-msg .view-btn {
+            background: #28a745;
+            display: inline-block;
+            padding: 8px 22px;
+        }
+        .unsupported-msg .view-btn:hover {
+            background: #218838;
+        }
+
+        .preview-loading {
+            color: white;
+            margin-top: 40px;
+            font-size: 15px;
+            opacity: 0.8;
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 600px) {
+            body {
+                padding: 12px;
+            }
+            .header-top {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+            }
+            .header-top h1 {
+                font-size: 22px;
+            }
+            .lang-switcher {
+                align-self: flex-end;
+            }
+            .content-box {
+                padding: 18px 16px 20px;
+            }
+            .file-item {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .btn-group {
+                justify-content: flex-start;
+            }
+            .modal-content {
+                height: 95vh;
+                max-height: 95vh;
+                border-radius: 6px;
+            }
+            .modal-header {
+                padding: 10px 14px;
+            }
+            .modal-body {
+                padding: 12px;
+            }
+            .text-preview {
+                padding: 16px;
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== 头部 ===== -->
+    <div class="header">
+        <div class="header-top">
+            <h1 id="pageTitle" data-i18n="title">Software Downloads</h1>
+            <div class="lang-switcher">
+                <button class="lang-btn" id="langBtn" onclick="toggleLangMenu()" aria-label="切换语言">
+                    <span id="currentLangLabel">EN</span>
+                    <span class="arrow">▾</span>
+                </button>
+                <div class="lang-menu" id="langMenu">
+                    <a href="#" onclick="setLang('zh')" data-lang="zh">中文</a>
+                    <a href="#" onclick="setLang('en')" data-lang="en">English</a>
+                </div>
+            </div>
+        </div>
+        <div class="header-sub" id="pageSubtitle" data-i18n="subtitle">Get the latest SDKs, drivers &amp; debugging tools</div>
+    </div>
+
+    <!-- ===== 返回按钮 ===== -->
+    <div class="back-row">
+        <a href="/" class="btn-back" id="backBtn" data-i18n="back">
+            <span class="arrow-icon">←</span>
+            <span>Back to Home</span>
+        </a>
+    </div>
+
+    <!-- ===== 内容 ===== -->
+    <div class="content-box">
+        <h2 id="fileListTitle" data-i18n="fileListTitle">File List</h2>
+        <ul id="fileList" class="file-list">
+            <li class="empty-msg" id="loadingMsg" data-i18n="loading">Loading files...</li>
+        </ul>
+    </div>
+
+    <!-- ===== 预览模态框 ===== -->
+    <div id="previewModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span id="previewTitle" data-i18n="previewTitle">File Preview</span>
+                <button class="close-btn" onclick="closePreview()" aria-label="关闭预览">×</button>
+            </div>
+            <div class="modal-body">
+                <div id="preview-container">
+                    <div class="preview-loading" id="previewLoadingMsg" data-i18n="previewLoading">Loading...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 依赖库 ===== -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+
+    <script>
+        // ============================================================
+        //  1. 翻译字典
+        // ============================================================
+        const I18N = {
+            en: {
+                title: 'Software Downloads',
+                subtitle: 'Get the latest SDKs, drivers & debugging tools',
+                back: 'Back to Home',
+                fileListTitle: 'File List',
+                loading: 'Loading files...',
+                empty: 'No files found. Please place files in files/software/ folder',
+                loadFailed: 'Load failed, please check server',
+                previewTitle: 'File Preview',
+                previewLoading: 'Loading...',
+                unsupported: 'This format does not support online preview',
+                downloadHint: 'Please download and open with local software',
+                previewLoadFailed: 'Preview load failed, please try downloading',
+                size: 'Size',
+                type: 'Type',
+                preview: 'Preview',
+                downloadBtn: 'Download',
+                externalLink: 'External Link',
+                downloadFailed: 'Download failed: link file content invalid',
+                langZh: '中文',
+                langEn: 'English',
+                close: '×',
+            },
+            zh: {
+                title: '开发软件下载',
+                subtitle: '获取最新的 SDK、驱动程序与调试工具',
+                back: '返回主界面',
+                fileListTitle: '文件列表',
+                loading: '正在加载文件...',
+                empty: '暂无文件，请将文件放入 files/software/ 文件夹中',
+                loadFailed: '加载失败，请检查服务器',
+                previewTitle: '文件预览',
+                previewLoading: '加载中...',
+                unsupported: '该格式不支持在线预览',
+                downloadHint: '请下载后使用本地软件打开',
+                previewLoadFailed: '预览加载失败，请尝试下载',
+                size: '大小',
+                type: '类型',
+                preview: '预览',
+                downloadBtn: '下载',
+                externalLink: '外部链接',
+                downloadFailed: '下载失败：链接文件内容无效',
+                langZh: '中文',
+                langEn: 'English',
+                close: '×',
+            }
+        };
+
+        // ============================================================
+        //  2. 状态 & 工具
+        // ============================================================
+        let currentLang = 'en';
+        const FOLDER_NAME = 'software';
+
+        function t(key) {
+            return I18N[currentLang]?.[key] || key;
+        }
+
+        function getLangLabel() {
+            return currentLang === 'en' ? 'EN' : '中文';
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // ============================================================
+        //  3. 语言切换
+        // ============================================================
+        function setLang(lang) {
+            if (lang === currentLang) {
+                closeLangMenu();
+                return;
+            }
+            currentLang = lang;
+            localStorage.setItem('software_docs_lang', lang);
+            renderStaticTexts();
+            loadFileList();
+            closeLangMenu();
+        }
+
+        function toggleLangMenu() {
+            const menu = document.getElementById('langMenu');
+            const btn = document.getElementById('langBtn');
+            menu.classList.toggle('show');
+            btn.classList.toggle('open');
+        }
+
+        function closeLangMenu() {
+            const menu = document.getElementById('langMenu');
+            const btn = document.getElementById('langBtn');
+            menu.classList.remove('show');
+            btn.classList.remove('open');
+        }
+
+        document.addEventListener('click', function(e) {
+            const switcher = document.querySelector('.lang-switcher');
+            if (switcher && !switcher.contains(e.target)) {
+                closeLangMenu();
+            }
+        });
+
+        // ============================================================
+        //  4. 渲染静态文本
+        // ============================================================
+        function renderStaticTexts() {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                let val = t(key);
+                if (val !== undefined) {
+                    if (el.hasChildNodes() && el.children.length > 0) {
+                        let textNodeFound = false;
+                        el.childNodes.forEach(node => {
+                            if (node.nodeType === Node.TEXT_NODE && node.textContent.trim() !== '') {
+                                node.textContent = val;
+                                textNodeFound = true;
+                            }
+                        });
+                        if (!textNodeFound) {
+                            el.appendChild(document.createTextNode(val));
+                        }
+                    } else {
+                        el.textContent = val;
+                    }
+                }
+            });
+
+            document.getElementById('currentLangLabel').textContent = getLangLabel();
+
+            document.querySelectorAll('.lang-menu a').forEach(a => {
+                const lang = a.getAttribute('data-lang');
+                a.classList.toggle('active', lang === currentLang);
+            });
+        }
+
+        // ============================================================
+        //  5. 加载文件列表（支持外链）
+        // ============================================================
+        async function loadFileList() {
+            const listEl = document.getElementById('fileList');
+            try {
+                listEl.innerHTML = `<li class="empty-msg" data-i18n="loading">${t('loading')}</li>`;
+
+                const response = await fetch(`/api/files?folder=${FOLDER_NAME}`);
+                if (!response.ok) throw new Error('Network error');
+                const result = await response.json();
+
+                if (result.success && result.data && result.data.length > 0) {
+                    const sizeLabel = t('size');
+                    const typeLabel = t('type');
+                    const previewLabel = t('preview');
+                    const downloadLabel = t('downloadBtn');
+                    const externalLabel = t('externalLink');
+
+                    listEl.innerHTML = result.data.map(file => {
+                        const encoded = encodeURIComponent(file.title);
+                        const isExternal = file.ext === '.url' || file.ext === '.link';
+                        const displayName = file.title.replace(/\.(url|link)$/, '');
+                        const typeDisplay = isExternal ? externalLabel : file.ext;
+
+                        // 下载按钮：外链使用JS函数，普通文件使用a标签
+                        let downloadHtml;
+                        if (isExternal) {
+                            downloadHtml = `<button class="download-btn" onclick="downloadExternalFile('${FOLDER_NAME}', '${encoded}')">${downloadLabel}</button>`;
+                        } else {
+                            downloadHtml = `<a href="/api/download?folder=${FOLDER_NAME}&filename=${encoded}" class="download-btn">${downloadLabel}</a>`;
+                        }
+
+                        return `
+                            <li class="file-item">
+                                <div class="file-info">
+                                    <div class="file-name">${escapeHtml(displayName)}</div>
+                                    <div class="file-meta">${sizeLabel}: ${escapeHtml(file.size)} | ${typeLabel}: ${escapeHtml(typeDisplay)}</div>
+                                </div>
+                                <div class="btn-group">
+                                    <button class="view-btn" onclick="openPreview('${FOLDER_NAME}', '${encoded}', '${escapeHtml(file.title)}')">
+                                        ${previewLabel}
+                                    </button>
+                                    ${downloadHtml}
+                                </div>
+                            </li>
+                        `;
+                    }).join('');
+                } else {
+                    listEl.innerHTML = `<li class="empty-msg" data-i18n="empty">${t('empty')}</li>`;
+                }
+            } catch (error) {
+                console.error(error);
+                listEl.innerHTML = `<li class="empty-msg error" data-i18n="loadFailed">${t('loadFailed')}</li>`;
+            }
+        }
+
+        // ============================================================
+        //  6. 外部链接下载
+        // ============================================================
+        async function downloadExternalFile(folder, encodedFilename) {
+            try {
+                const response = await fetch(`/api/preview?folder=${folder}&filename=${encodedFilename}`);
+                if (!response.ok) throw new Error('Failed to fetch link content');
+                const externalUrl = (await response.text()).trim();
+                if (!externalUrl) throw new Error('Empty URL');
+
+                const a = document.createElement('a');
+                a.href = externalUrl;
+                a.download = '';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            } catch (err) {
+                alert(t('downloadFailed'));
+                console.error(err);
+            }
+        }
+
+        // ============================================================
+        //  7. 预览功能（支持外链显示内容）
+        // ============================================================
+        pdfjsLib.GlobalWorkerOptions.workerSrc =
+            'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        async function openPreview(folder, encodedFilename, originalName) {
+            const modal = document.getElementById('previewModal');
+            const container = document.getElementById('preview-container');
+            const titleEl = document.getElementById('previewTitle');
+
+            modal.classList.add('open');
+            titleEl.textContent = originalName || t('previewTitle');
+            container.innerHTML = `<div class="preview-loading">${t('previewLoading')}</div>`;
+
+            const ext = (originalName || '').split('.').pop().toLowerCase();
+            const url = `/api/preview?folder=${folder}&filename=${encodedFilename}`;
+
+            // 对于外链文件，直接显示文本内容（即URL）
+            if (ext === 'url' || ext === 'link') {
+                await renderText(url, container);
+                return;
+            }
+
+            try {
+                if (ext === 'pdf') {
+                    await renderPDF(url, container);
+                } else if (ext === 'docx') {
+                    await renderDocx(url, container);
+                } else if (['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp', 'bmp'].includes(ext)) {
+                    renderImage(url, container);
+                } else if (['txt', 'json', 'md', 'js', 'css', 'html', 'xml', 'yaml', 'yml', 'toml', 'sh', 'py',
+                        'java', 'c', 'cpp', 'go', 'rs', 'rb', 'php'
+                    ].includes(ext)) {
+                    await renderText(url, container);
+                } else {
+                    container.innerHTML = `
+                        <div class="unsupported-msg">
+                            <h3>${t('unsupported')}</h3>
+                            <p>${t('downloadHint')}</p>
+                            <a href="/api/download?folder=${folder}&filename=${encodedFilename}" class="view-btn">${t('downloadBtn')}</a>
+                        </div>
+                    `;
+                }
+            } catch (err) {
+                console.error(err);
+                container.innerHTML = `
+                    <div class="unsupported-msg">
+                        <h3>${t('previewLoadFailed')}</h3>
+                        <p style="margin-top:6px;">${err.message || ''}</p>
+                    </div>
+                `;
+            }
+        }
+
+        function closePreview() {
+            document.getElementById('previewModal').classList.remove('open');
+            document.getElementById('preview-container').innerHTML = '';
+        }
+
+        document.getElementById('previewModal').addEventListener('click', function(e) {
+            if (e.target === this) closePreview();
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closePreview();
+        });
+
+        // ----- 渲染器 -----
+        async function renderPDF(url, container) {
+            container.style.background = '#525659';
+            const loadingTask = pdfjsLib.getDocument(url);
+            const pdf = await loadingTask.promise;
+            const page = await pdf.getPage(1);
+            const viewport = page.getViewport({ scale: 1.5 });
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+            canvas.id = 'pdf-canvas';
+            container.innerHTML = '';
+            container.appendChild(canvas);
+            await page.render({ canvasContext: ctx, viewport }).promise;
+        }
+
+        async function renderDocx(url, container) {
+            container.style.background = 'white';
+            const resp = await fetch(url);
+            const ab = await resp.arrayBuffer();
+            const result = await mammoth.convertToHtml({ arrayBuffer: ab });
+            const div = document.createElement('div');
+            div.className = 'text-preview';
+            div.innerHTML = result.value;
+            container.innerHTML = '';
+            container.appendChild(div);
+        }
+
+        function renderImage(url, container) {
+            container.style.background = '#333';
+            const img = document.createElement('img');
+            img.src = url;
+            img.className = 'image-preview';
+            img.alt = 'Image preview';
+            container.innerHTML = '';
+            container.appendChild(img);
+        }
+
+        async function renderText(url, container) {
+            container.style.background = 'white';
+            const resp = await fetch(url);
+            const text = await resp.text();
+            const div = document.createElement('div');
+            div.className = 'text-preview';
+            div.textContent = text;
+            container.innerHTML = '';
+            container.appendChild(div);
+        }
+
+        // ============================================================
+        //  8. 初始化
+        // ============================================================
+        window.onload = function() {
+            const saved = localStorage.getItem('software_docs_lang');
+            if (saved === 'zh' || saved === 'en') {
+                currentLang = saved;
+            } else {
+                currentLang = 'en';
+            }
+
+            renderStaticTexts();
+            loadFileList();
+        };
+
+        // 暴露全局
+        window.setLang = setLang;
+        window.toggleLangMenu = toggleLangMenu;
+        window.openPreview = openPreview;
+        window.closePreview = closePreview;
+        window.loadFileList = loadFileList;
+        window.downloadExternalFile = downloadExternalFile;
+    </script>
+</body>
+</html>

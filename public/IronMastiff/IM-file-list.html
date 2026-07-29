@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IronMastiff - All Resources</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        /* --- 头部 --- */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .header-top h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0;
+        }
+        .header-top h1 .icon {
+            width: 28px;
+            height: 28px;
+            fill: #d93a3a;
+            flex-shrink: 0;
+        }
+        .header .subtitle {
+            font-size: 14px;
+            color: #888888;
+            margin-top: 4px;
+        }
+        .header .badge {
+            display: inline-block;
+            padding: 3px 14px;
+            background-color: #d93a3a;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #fff;
+            margin-top: 6px;
+        }
+
+        /* --- 语言切换 (暗色主题) --- */
+        .lang-switch {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+        }
+        .lang-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: transparent;
+            border: 1px solid #444;
+            border-radius: 6px;
+            padding: 5px 12px 5px 14px;
+            color: #ccc;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: border-color 0.25s, color 0.25s, background 0.25s;
+            outline: none;
+            user-select: none;
+            line-height: 1.4;
+        }
+        .lang-btn:hover {
+            border-color: #d93a3a;
+            color: #fff;
+            background: rgba(217, 58, 58, 0.08);
+        }
+        .lang-btn .arrow {
+            transition: transform 0.25s ease;
+            fill: #888;
+            width: 10px;
+            height: 10px;
+            flex-shrink: 0;
+        }
+        .lang-btn.open .arrow {
+            transform: rotate(180deg);
+        }
+
+        .lang-dropdown {
+            position: absolute;
+            right: 0;
+            top: calc(100% + 6px);
+            min-width: 110px;
+            background: #1e1e1e;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 4px 0;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-4px) scale(0.96);
+            transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+            transform-origin: top right;
+        }
+        .lang-dropdown.open {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+        .lang-option {
+            display: block;
+            padding: 7px 18px;
+            color: #bbb;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+            border: none;
+            background: transparent;
+            width: 100%;
+            text-align: left;
+            line-height: 1.4;
+        }
+        .lang-option:hover {
+            background: #2a2a2a;
+            color: #fff;
+        }
+        .lang-option.active {
+            color: #d93a3a;
+            position: relative;
+        }
+        .lang-option.active::before {
+            content: "✓";
+            margin-right: 8px;
+            font-weight: 600;
+            color: #d93a3a;
+        }
+        .lang-option:not(.active)::before {
+            content: "";
+            margin-right: 20px;
+            display: inline-block;
+        }
+
+        /* --- 顶部操作栏 --- */
+        .top-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .btn-back {
+            padding: 10px 20px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        .btn-back:hover {
+            background-color: #444;
+        }
+        .btn-back.primary {
+            background-color: #d93a3a;
+        }
+        .btn-back.primary:hover {
+            background-color: #c03232;
+        }
+
+        .stats {
+            margin-left: auto;
+            font-size: 13px;
+            color: #888;
+        }
+        .stats span {
+            color: #d93a3a;
+            font-weight: 600;
+        }
+
+        /* --- 分类筛选 --- */
+        .filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 6px 16px;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+            color: #aaa;
+            white-space: nowrap;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .filter-btn:hover {
+            background: #333;
+            color: #fff;
+        }
+        .filter-btn.active {
+            background: #d93a3a;
+            color: white;
+            border-color: #d93a3a;
+        }
+        .filter-btn .btn-icon {
+            width: 14px;
+            height: 14px;
+            fill: currentColor;
+        }
+
+        /* --- 文件列表 --- */
+        .file-list {
+            display: grid;
+            gap: 12px;
+        }
+        .file-item {
+            background: #1e1e1e;
+            padding: 18px 22px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: border-color 0.3s;
+        }
+        .file-item:hover {
+            border-color: #555;
+        }
+        .file-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .file-info h4 {
+            margin: 0 0 4px 0;
+            font-size: 15px;
+            color: #e0e0e0;
+            word-break: break-all;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .file-info h4 .file-icon {
+            width: 18px;
+            height: 18px;
+            fill: #aaa;
+            flex-shrink: 0;
+        }
+        .file-meta {
+            font-size: 12px;
+            color: #777;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .file-meta .meta-icon {
+            width: 14px;
+            height: 14px;
+            fill: #777;
+            vertical-align: middle;
+            margin-right: 2px;
+        }
+        .download-btn {
+            padding: 8px 18px;
+            background-color: #333;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 13px;
+            transition: background-color 0.3s;
+            flex-shrink: 0;
+            margin-left: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .download-btn:hover {
+            background-color: #444;
+        }
+        .download-btn .btn-icon {
+            width: 14px;
+            height: 14px;
+            fill: currentColor;
+        }
+        .empty-msg {
+            text-align: center;
+            color: #666;
+            padding: 60px 0;
+            font-size: 14px;
+        }
+        .empty-msg .empty-icon {
+            width: 48px;
+            height: 48px;
+            fill: #666;
+            display: block;
+            margin: 0 auto 12px;
+        }
+
+        /* --- 响应式 --- */
+        @media (max-width: 768px) {
+            .file-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            .download-btn {
+                margin-left: 0;
+                width: 100%;
+                text-align: center;
+                justify-content: center;
+            }
+            .top-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .stats {
+                margin-left: 0;
+                text-align: center;
+            }
+            .lang-switch {
+                position: relative;
+                top: auto;
+                transform: none;
+                margin-left: 10px;
+            }
+            .header-top {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 8px;
+            }
+        }
+        @media (max-width: 480px) {
+            .lang-btn {
+                padding: 4px 10px;
+                font-size: 12px;
+            }
+            .lang-dropdown {
+                min-width: 90px;
+                right: 0;
+                left: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-top">
+                <h1>
+                    <!-- 使用齿轮图标替代 🔧 -->
+                    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6A3.6 3.6 0 1 1 15.6 12 3.6 3.6 0 0 1 12 15.6z"/>
+                    </svg>
+                    <span id="pageTitle">IronMastiff - All Resources</span>
+                </h1>
+                <!-- 语言切换 -->
+                <div class="lang-switch">
+                    <button class="lang-btn" id="langBtn" aria-haspopup="true" aria-expanded="false">
+                        <span id="currentLangText">English</span>
+                        <svg class="arrow" viewBox="0 0 10 10" aria-hidden="true">
+                            <path d="M5 7L0 2h10z" />
+                        </svg>
+                    </button>
+                    <div class="lang-dropdown" id="langDropdown" role="menu">
+                        <button class="lang-option active" data-lang="en" role="menuitem">English</button>
+                        <button class="lang-option" data-lang="zh" role="menuitem">中文</button>
+                    </div>
+                </div>
+            </div>
+            <p class="subtitle" id="pageSubtitle">IronMastiff project documentation center - all files at a glance</p>
+            <span class="badge" id="projectBadge">IronMastiff</span>
+        </div>
+
+        <div class="top-bar">
+            <a href="/IronMastiff/IM-page.html" class="btn-back" id="backMainBtn">← Back to IronMastiff Home</a>
+            <a href="/" class="btn-back primary" id="backHomeBtn">🏠 Home</a>
+            <div class="stats" id="statsText">Total <span id="fileCount">0</span> files</div>
+        </div>
+
+        <div class="filters" id="filters">
+            <button class="filter-btn active" data-category="all">
+                <svg class="btn-icon" viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h10v2H4z"/></svg>
+                <span id="filterAll">All</span>
+            </button>
+        </div>
+
+        <div id="fileList" class="file-list">
+            <p class="empty-msg" id="loadingMsg">
+                <svg class="empty-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                Loading file list...
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        //  1. 翻译字典
+        // ============================================================
+        const LANG = {
+            en: {
+                title: 'IronMastiff - All Resources',
+                subtitle: 'IronMastiff project documentation center - all files at a glance',
+                badge: 'IronMastiff',
+                backMain: '← Back to IronMastiff Home',
+                backHome: '🏠 Home',
+                stats: 'Total {count} files',
+                filterAll: 'All',
+                loading: 'Loading file list...',
+                empty: 'No files in this category',
+                loadError: 'Failed to load, please check server',
+                noFiles: 'No files found',
+                metaCategory: 'Category',
+                metaSize: 'Size',
+                metaType: 'Type',
+                download: 'View / Download',
+                langZh: '中文',
+                langEn: 'English',
+                htmlTitle: 'IronMastiff - All Resources'
+            },
+            zh: {
+                title: '铁獒 - 全部资源列表',
+                subtitle: 'IronMastiff 项目文档中心 - 所有文件一览',
+                badge: 'IronMastiff',
+                backMain: '← 返回铁獒主界面',
+                backHome: '🏠 返回首页',
+                stats: '共 {count} 个文件',
+                filterAll: '全部',
+                loading: '正在加载文件列表...',
+                empty: '该分类下暂无文件',
+                loadError: '加载失败，请检查服务器',
+                noFiles: '未找到文件',
+                metaCategory: '分类',
+                metaSize: '大小',
+                metaType: '类型',
+                download: '查看/下载',
+                langZh: '中文',
+                langEn: 'English',
+                htmlTitle: '铁獒 - 全部资源列表'
+            }
+        };
+
+        // ============================================================
+        //  2. 状态
+        // ============================================================
+        let currentLang = 'en';
+        let allFiles = [];
+        let dropdownOpen = false;
+
+        // ============================================================
+        //  3. DOM 引用
+        // ============================================================
+        const $ = (id) => document.getElementById(id);
+        const pageTitle = $('pageTitle');
+        const pageSubtitle = $('pageSubtitle');
+        const projectBadge = $('projectBadge');
+        const backMainBtn = $('backMainBtn');
+        const backHomeBtn = $('backHomeBtn');
+        const statsText = $('statsText');
+        const fileCount = $('fileCount');
+        const filterAll = $('filterAll');
+        const loadingMsg = $('loadingMsg');
+        const fileList = $('fileList');
+        const langBtn = $('langBtn');
+        const currentLangText = $('currentLangText');
+        const langDropdown = $('langDropdown');
+        const langOptions = langDropdown.querySelectorAll('.lang-option');
+
+        // ============================================================
+        //  4. 核心翻译函数
+        // ============================================================
+        function t(key, params) {
+            let text = LANG[currentLang]?.[key] ?? LANG.en[key] ?? key;
+            if (params) {
+                for (const [k, v] of Object.entries(params)) {
+                    text = text.replace(`{${k}}`, v);
+                }
+            }
+            return text;
+        }
+
+        // ============================================================
+        //  5. 更新所有 UI 文本 (静态部分)
+        // ============================================================
+        function updateUI() {
+            document.title = t('htmlTitle');
+            pageTitle.textContent = t('title');
+            pageSubtitle.textContent = t('subtitle');
+            projectBadge.textContent = t('badge');
+            backMainBtn.textContent = t('backMain');
+            backHomeBtn.textContent = t('backHome');
+            filterAll.textContent = t('filterAll');
+            currentLangText.textContent = currentLang === 'en' ? t('langEn') : t('langZh');
+
+            // 更新统计（如果有数据）
+            if (allFiles.length > 0) {
+                statsText.innerHTML = t('stats', { count: allFiles.length });
+                fileCount.textContent = allFiles.length;
+            }
+
+            // 更新下拉选项
+            langOptions.forEach(opt => {
+                const lang = opt.dataset.lang;
+                opt.textContent = lang === 'en' ? t('langEn') : t('langZh');
+                opt.classList.toggle('active', lang === currentLang);
+            });
+
+            document.documentElement.lang = currentLang === 'en' ? 'en' : 'zh-CN';
+
+            // 重新渲染文件列表（更新标签文字）
+            if (allFiles.length > 0) {
+                renderFiles(allFiles, false); // 不重置筛选状态
+            } else {
+                // 显示加载或空状态
+                if (document.querySelector('.empty-msg')) {
+                    // 保留空状态
+                }
+            }
+        }
+
+        // ============================================================
+        //  6. 加载文件列表 (API)
+        // ============================================================
+        const PROJECT_NAME = 'IronMastiff';
+
+        async function loadFiles() {
+            try {
+                const response = await fetch(`/api/project-files?project=${PROJECT_NAME}`);
+                const result = await response.json();
+                if (result.success) {
+                    allFiles = result.data;
+                    document.getElementById('fileCount').textContent = allFiles.length;
+                    statsText.innerHTML = t('stats', { count: allFiles.length });
+                    generateFilters();
+                    renderFiles(allFiles);
+                } else {
+                    fileList.innerHTML = `<p class="empty-msg" style="color:#d93a3a;">${t('loadError')}</p>`;
+                }
+            } catch (error) {
+                console.error(error);
+                fileList.innerHTML = `<p class="empty-msg" style="color:#d93a3a;">${t('loadError')}</p>`;
+            }
+        }
+
+        // ============================================================
+        //  7. 生成分类筛选按钮
+        // ============================================================
+        function generateFilters() {
+            const filtersContainer = document.getElementById('filters');
+            const categories = [...new Set(allFiles.map(f => f.category))];
+            // 保留 "全部" 按钮
+            let html = `<button class="filter-btn active" data-category="all" onclick="filterFiles('all', this)">
+                <svg class="btn-icon" viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h10v2H4z"/></svg>
+                ${t('filterAll')}
+            </button>`;
+            categories.forEach(cat => {
+                html += `<button class="filter-btn" data-category="${cat}" onclick="filterFiles('${cat}', this)">${cat}</button>`;
+            });
+            filtersContainer.innerHTML = html;
+        }
+
+        // ============================================================
+        //  8. 筛选与渲染
+        // ============================================================
+        function filterFiles(category, btn) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+
+            if (category === 'all') {
+                renderFiles(allFiles);
+            } else {
+                const filtered = allFiles.filter(f => f.category === category);
+                renderFiles(filtered);
+            }
+        }
+
+        function renderFiles(files, updateStats = true) {
+            const container = document.getElementById('fileList');
+            if (!files || files.length === 0) {
+                container.innerHTML = `<p class="empty-msg">
+                    <svg class="empty-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                    ${t('empty')}
+                </p>`;
+                return;
+            }
+
+            container.innerHTML = files.map(file => {
+                // 根据扩展名选择图标
+                let iconName = 'document';
+                if (file.ext === '.pdf') iconName = 'pdf';
+                else if (file.ext === '.docx' || file.ext === '.doc') iconName = 'word';
+                else if (file.ext === '.zip' || file.ext === '.rar') iconName = 'zip';
+                else if (['.mp4', '.avi', '.mov'].includes(file.ext)) iconName = 'video';
+                else if (['.png', '.jpg', '.jpeg', '.gif'].includes(file.ext)) iconName = 'image';
+                else if (file.ext === '.url') iconName = 'link';
+
+                const svgMap = {
+                    document: '<svg class="file-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>',
+                    pdf: '<svg class="file-icon" viewBox="0 0 24 24"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1z"/></svg>',
+                    word: '<svg class="file-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>',
+                    zip: '<svg class="file-icon" viewBox="0 0 24 24"><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-2 10h-2v-2h2v2zm0-4h-2v-2h2v2zm-4 4h-2v-2h2v2zm0-4h-2v-2h2v2z"/></svg>',
+                    video: '<svg class="file-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>',
+                    image: '<svg class="file-icon" viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>',
+                    link: '<svg class="file-icon" viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>'
+                };
+                const iconSvg = svgMap[iconName] || svgMap.document;
+
+                return `
+                    <div class="file-item">
+                        <div class="file-info">
+                            <h4>${iconSvg} ${escapeHtml(file.title)}</h4>
+                            <div class="file-meta">
+                                <span>
+                                    <svg class="meta-icon" viewBox="0 0 24 24"><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z"/></svg>
+                                    ${t('metaCategory')}: ${escapeHtml(file.category)}
+                                </span>
+                                <span>
+                                    <svg class="meta-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                                    ${t('metaSize')}: ${escapeHtml(file.size)}
+                                </span>
+                                <span>
+                                    <svg class="meta-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                                    ${t('metaType')}: ${escapeHtml(file.ext)}
+                                </span>
+                            </div>
+                        </div>
+                        <a href="${escapeHtml(file.file_path)}" target="_blank" class="download-btn">
+                            <svg class="btn-icon" viewBox="0 0 24 24"><path d="M5 20h14v-2H5v2zm7-18v12.17l3.59-3.58L17 12l-5 5-5-5 1.41-1.41L12 14.17V2z"/></svg>
+                            ${t('download')}
+                        </a>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ============================================================
+        //  9. 语言切换（使用统一键名 'lang'）
+        // ============================================================
+        function switchLanguage(lang) {
+            if (lang === currentLang) {
+                closeDropdown();
+                return;
+            }
+            currentLang = lang;
+            localStorage.setItem('lang', lang);
+            updateUI();
+            // 重新生成筛选器（因为 "全部" 文本变了）
+            generateFilters();
+            // 重新应用当前筛选（保留筛选状态）
+            const activeFilter = document.querySelector('.filter-btn.active');
+            if (activeFilter) {
+                const cat = activeFilter.dataset.category;
+                if (cat === 'all') {
+                    renderFiles(allFiles);
+                } else {
+                    const filtered = allFiles.filter(f => f.category === cat);
+                    renderFiles(filtered);
+                }
+            } else {
+                renderFiles(allFiles);
+            }
+            closeDropdown();
+            langBtn.setAttribute('aria-expanded', 'false');
+        }
+
+        // ============================================================
+        //  10. 下拉菜单控制
+        // ============================================================
+        function toggleDropdown(e) {
+            e.stopPropagation();
+            dropdownOpen = !dropdownOpen;
+            langDropdown.classList.toggle('open', dropdownOpen);
+            langBtn.classList.toggle('open', dropdownOpen);
+            langBtn.setAttribute('aria-expanded', dropdownOpen);
+        }
+
+        function closeDropdown() {
+            dropdownOpen = false;
+            langDropdown.classList.remove('open');
+            langBtn.classList.remove('open');
+            langBtn.setAttribute('aria-expanded', 'false');
+        }
+
+        // ============================================================
+        //  11. 工具函数
+        // ============================================================
+        function escapeHtml(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // ============================================================
+        //  12. 事件绑定
+        // ============================================================
+        langBtn.addEventListener('click', toggleDropdown);
+
+        langOptions.forEach(opt => {
+            opt.addEventListener('click', function(e) {
+                e.stopPropagation();
+                switchLanguage(this.dataset.lang);
+            });
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.lang-switch') && dropdownOpen) {
+                closeDropdown();
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && dropdownOpen) {
+                closeDropdown();
+                langBtn.focus();
+            }
+        });
+
+        // ============================================================
+        //  13. 初始化 (默认英语)
+        // ============================================================
+        (function init() {
+            const saved = localStorage.getItem('lang');
+            if (saved === 'en' || saved === 'zh') {
+                currentLang = saved;
+            } else {
+                currentLang = 'en';
+            }
+            // 应用语言（静态文本）
+            updateUI();
+            // 加载数据
+            loadFiles();
+            closeDropdown();
+        })();
+    </script>
+</body>
+</html>

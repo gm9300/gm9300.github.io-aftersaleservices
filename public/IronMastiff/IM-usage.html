@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Manuals</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+
+        /* --- 头部 --- */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 0 0 4px 0;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .header-top h1 {
+            font-size: 28px;
+            margin: 0;
+            color: #1a1a1a;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .header-top h1 .icon {
+            width: 28px;
+            height: 28px;
+            fill: #17a2b8;
+            flex-shrink: 0;
+        }
+        .header p {
+            color: #6c757d;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        /* --- 语言切换 (浅色主题) --- */
+        .lang-switch {
+            position: relative;
+            z-index: 100;
+            margin-left: auto;
+        }
+        .lang-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: transparent;
+            border: 1px solid #d0d0d0;
+            border-radius: 6px;
+            padding: 5px 12px 5px 14px;
+            color: #333;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: border-color 0.25s, color 0.25s, background 0.25s;
+            outline: none;
+            user-select: none;
+            line-height: 1.4;
+        }
+        .lang-btn:hover {
+            border-color: #17a2b8;
+            color: #17a2b8;
+            background: rgba(23, 162, 184, 0.06);
+        }
+        .lang-btn .arrow {
+            transition: transform 0.25s ease;
+            fill: #888;
+            width: 10px;
+            height: 10px;
+            flex-shrink: 0;
+        }
+        .lang-btn.open .arrow {
+            transform: rotate(180deg);
+        }
+
+        .lang-dropdown {
+            position: absolute;
+            right: 0;
+            top: calc(100% + 6px);
+            min-width: 110px;
+            background: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 4px 0;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-4px) scale(0.96);
+            transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+            transform-origin: top right;
+        }
+        .lang-dropdown.open {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+        .lang-option {
+            display: block;
+            padding: 7px 18px;
+            color: #333;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+            border: none;
+            background: transparent;
+            width: 100%;
+            text-align: left;
+            line-height: 1.4;
+        }
+        .lang-option:hover {
+            background: #f0f0f0;
+            color: #000;
+        }
+        .lang-option.active {
+            color: #17a2b8;
+            position: relative;
+        }
+        .lang-option.active::before {
+            content: "✓";
+            margin-right: 8px;
+            font-weight: 600;
+            color: #17a2b8;
+        }
+        .lang-option:not(.active)::before {
+            content: "";
+            margin-right: 20px;
+            display: inline-block;
+        }
+
+        /* --- 返回按钮 --- */
+        .btn-back {
+            padding: 10px 20px;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .btn-back:hover {
+            background-color: #5a6268;
+        }
+
+        /* --- 内容卡片 --- */
+        .content-box {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        .content-box h2 {
+            font-size: 20px;
+            margin-top: 0;
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+
+        /* --- 文件列表 --- */
+        .file-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        .file-item:last-child {
+            border-bottom: none;
+        }
+        .file-info {
+            flex: 1;
+        }
+        .file-name {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .file-meta {
+            font-size: 12px;
+            color: #6c757d;
+        }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+        .view-btn {
+            padding: 8px 16px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+        }
+        .view-btn:hover {
+            background: #0056b3;
+        }
+        .download-btn {
+            padding: 8px 16px;
+            background: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+        }
+        .download-btn:hover {
+            background: #218838;
+        }
+        .empty-msg {
+            text-align: center;
+            color: #999;
+            padding: 20px;
+        }
+
+        /* --- 响应式 --- */
+        @media (max-width: 600px) {
+            .header-top {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 8px;
+            }
+            .lang-switch {
+                margin-left: 0;
+            }
+            .header-top h1 {
+                font-size: 22px;
+            }
+            .file-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            .btn-group {
+                width: 100%;
+            }
+            .btn-group .view-btn,
+            .btn-group .download-btn {
+                flex: 1;
+                text-align: center;
+            }
+        }
+        @media (max-width: 400px) {
+            .lang-btn {
+                padding: 4px 10px;
+                font-size: 12px;
+            }
+            .lang-dropdown {
+                min-width: 90px;
+                right: 0;
+                left: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-top">
+            <h1>
+                <!-- 使用书本图标替代 📘 -->
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/>
+                </svg>
+                <span id="pageTitle">User Manuals</span>
+            </h1>
+            <!-- 语言切换 -->
+            <div class="lang-switch">
+                <button class="lang-btn" id="langBtn" aria-haspopup="true" aria-expanded="false">
+                    <span id="currentLangText">English</span>
+                    <svg class="arrow" viewBox="0 0 10 10" aria-hidden="true">
+                        <path d="M5 7L0 2h10z" />
+                    </svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown" role="menu">
+                    <button class="lang-option active" data-lang="en" role="menuitem">English</button>
+                    <button class="lang-option" data-lang="zh" role="menuitem">中文</button>
+                </div>
+            </div>
+        </div>
+        <p id="pageSubtitle">Quick start, operation guides and FAQs</p>
+    </div>
+
+    <div style="text-align: left;">
+        <a href="/" class="btn-back" id="backBtn">← Back to Home</a>
+    </div>
+
+    <div class="content-box">
+        <h2 id="fileListTitle">File List</h2>
+        <ul id="fileList" class="file-list">
+            <li class="empty-msg" id="loadingMsg">Loading files...</li>
+        </ul>
+    </div>
+
+    <script>
+        // ============================================================
+        //  1. 翻译字典
+        // ============================================================
+        const LANG = {
+            en: {
+                title: 'User Manuals',
+                subtitle: 'Quick start, operation guides and FAQs',
+                back: '← Back to Home',
+                fileListTitle: 'File List',
+                loading: 'Loading files...',
+                empty: 'No files found, please place files in the folder',
+                loadError: 'Failed to load, please check server',
+                metaSize: 'Size',
+                metaType: 'Type',
+                btnPreview: 'Preview',
+                btnDownload: 'Download',
+                langZh: '中文',
+                langEn: 'English',
+                htmlTitle: 'User Manuals'
+            },
+            zh: {
+                title: '产品使用指南',
+                subtitle: '快速入门、操作手册与常见问题解答',
+                back: '← 返回主界面',
+                fileListTitle: '文件列表',
+                loading: '正在加载文件...',
+                empty: '暂无文件，请将文件放入对应文件夹中',
+                loadError: '加载失败，请检查服务器',
+                metaSize: '大小',
+                metaType: '类型',
+                btnPreview: '预览',
+                btnDownload: '下载',
+                langZh: '中文',
+                langEn: 'English',
+                htmlTitle: '产品使用指南'
+            }
+        };
+
+        // ============================================================
+        //  2. 状态
+        // ============================================================
+        let currentLang = 'en'; // 默认英语
+        let fileData = null;
+        let dropdownOpen = false;
+
+        // ============================================================
+        //  3. DOM 引用
+        // ============================================================
+        const $ = (id) => document.getElementById(id);
+        const pageTitle = $('pageTitle');
+        const pageSubtitle = $('pageSubtitle');
+        const backBtn = $('backBtn');
+        const fileListTitle = $('fileListTitle');
+        const fileList = $('fileList');
+        const loadingMsg = $('loadingMsg');
+        const langBtn = $('langBtn');
+        const currentLangText = $('currentLangText');
+        const langDropdown = $('langDropdown');
+        const langOptions = langDropdown.querySelectorAll('.lang-option');
+
+        // ============================================================
+        //  4. 核心翻译函数
+        // ============================================================
+        function t(key) {
+            return LANG[currentLang]?.[key] ?? LANG.en[key] ?? key;
+        }
+
+        // ============================================================
+        //  5. 渲染文件列表 (使用当前语言)
+        // ============================================================
+        function renderFileList(data) {
+            if (!data || data.length === 0) {
+                fileList.innerHTML = `<li class="empty-msg">${t('empty')}</li>`;
+                return;
+            }
+            const folder = 'usage';
+            fileList.innerHTML = data.map(file => {
+                const encoded = encodeURIComponent(file.title);
+                return `
+                    <li class="file-item">
+                        <div class="file-info">
+                            <div class="file-name">${escapeHtml(file.title)}</div>
+                            <div class="file-meta">${t('metaSize')}: ${escapeHtml(file.size)} | ${t('metaType')}: ${escapeHtml(file.ext)}</div>
+                        </div>
+                        <div class="btn-group">
+                            <!-- 注意：原代码中预览链接指向 folder=product，这里保留原逻辑 -->
+                            <a href="/api/preview?folder=product&filename=${encoded}" target="_blank" class="view-btn">${t('btnPreview')}</a>
+                            <a href="/api/download?folder=${folder}&filename=${encoded}" class="download-btn">${t('btnDownload')}</a>
+                        </div>
+                    </li>
+                `;
+            }).join('');
+        }
+
+        // ============================================================
+        //  6. 更新所有 UI 文本 (静态部分 + 文件列表)
+        // ============================================================
+        function updateUI() {
+            document.title = t('htmlTitle');
+            pageTitle.textContent = t('title');
+            pageSubtitle.textContent = t('subtitle');
+            backBtn.textContent = t('back');
+            fileListTitle.textContent = t('fileListTitle');
+            currentLangText.textContent = currentLang === 'en' ? t('langEn') : t('langZh');
+
+            langOptions.forEach(opt => {
+                const lang = opt.dataset.lang;
+                opt.textContent = lang === 'en' ? t('langEn') : t('langZh');
+                opt.classList.toggle('active', lang === currentLang);
+            });
+
+            document.documentElement.lang = currentLang === 'en' ? 'en' : 'zh-CN';
+
+            if (fileData !== null) {
+                renderFileList(fileData);
+            } else {
+                // 初始状态
+                if (fileData === undefined) {
+                    // 保留加载消息，由 loadFiles 处理
+                } else {
+                    fileList.innerHTML = `<li class="empty-msg">${t('empty')}</li>`;
+                }
+            }
+        }
+
+        // ============================================================
+        //  7. 加载文件列表 (API)
+        // ============================================================
+        async function loadFiles() {
+            try {
+                const response = await fetch('/api/files?folder=usage');
+                if (!response.ok) throw new Error('Network error');
+                const result = await response.json();
+                if (result.success && result.data && result.data.length > 0) {
+                    fileData = result.data;
+                    renderFileList(fileData);
+                } else {
+                    fileData = [];
+                    fileList.innerHTML = `<li class="empty-msg">${t('empty')}</li>`;
+                }
+            } catch (error) {
+                console.error(error);
+                fileData = null;
+                fileList.innerHTML = `<li class="empty-msg" style="color:red;">${t('loadError')}</li>`;
+            }
+        }
+
+        // ============================================================
+        //  8. 语言切换（使用统一键名 'lang'）
+        // ============================================================
+        function switchLanguage(lang) {
+            if (lang === currentLang) {
+                closeDropdown();
+                return;
+            }
+            currentLang = lang;
+            localStorage.setItem('lang', lang);
+            updateUI();
+            closeDropdown();
+            langBtn.setAttribute('aria-expanded', 'false');
+        }
+
+        // ============================================================
+        //  9. 下拉菜单控制
+        // ============================================================
+        function toggleDropdown(e) {
+            e.stopPropagation();
+            dropdownOpen = !dropdownOpen;
+            langDropdown.classList.toggle('open', dropdownOpen);
+            langBtn.classList.toggle('open', dropdownOpen);
+            langBtn.setAttribute('aria-expanded', dropdownOpen);
+        }
+
+        function closeDropdown() {
+            dropdownOpen = false;
+            langDropdown.classList.remove('open');
+            langBtn.classList.remove('open');
+            langBtn.setAttribute('aria-expanded', 'false');
+        }
+
+        // ============================================================
+        //  10. 工具函数
+        // ============================================================
+        function escapeHtml(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // ============================================================
+        //  11. 事件绑定
+        // ============================================================
+        langBtn.addEventListener('click', toggleDropdown);
+
+        langOptions.forEach(opt => {
+            opt.addEventListener('click', function(e) {
+                e.stopPropagation();
+                switchLanguage(this.dataset.lang);
+            });
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.lang-switch') && dropdownOpen) {
+                closeDropdown();
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && dropdownOpen) {
+                closeDropdown();
+                langBtn.focus();
+            }
+        });
+
+        // ============================================================
+        //  12. 初始化 (默认英语)
+        // ============================================================
+        (function init() {
+            const saved = localStorage.getItem('lang');
+            if (saved === 'en' || saved === 'zh') {
+                currentLang = saved;
+            } else {
+                currentLang = 'en';
+            }
+            updateUI();
+            loadFiles();
+            closeDropdown();
+        })();
+    </script>
+</body>
+</html>

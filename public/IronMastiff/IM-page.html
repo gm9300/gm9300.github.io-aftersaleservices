@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IronMastiff - Product Documentation & Resource Center</title>
+    <style>
+        /* --- 全局重置与基础样式 --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1100px;
+        }
+
+        /* --- 顶部导航栏 --- */
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 15px 20px;
+            background-color: #1e1e1e;
+            border: 1px solid #333333;
+            border-radius: 12px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .top-nav .brand {
+            font-size: 20px;
+            font-weight: 600;
+            color: #d93a3a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .top-nav .brand .brand-icon {
+            width: 24px;
+            height: 24px;
+            fill: #d93a3a;
+        }
+        .top-nav .nav-links {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .top-nav .nav-links a {
+            color: #aaa;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .top-nav .nav-links a:hover {
+            color: #fff;
+        }
+        .top-nav .nav-links .btn-home {
+            padding: 8px 16px;
+            background-color: #333;
+            border-radius: 6px;
+            color: #fff !important;
+        }
+        .top-nav .nav-links .btn-home:hover {
+            background-color: #444;
+        }
+
+        /* --- 语言切换 (深色主题) --- */
+        .lang-switch {
+            position: relative;
+            z-index: 100;
+        }
+        .lang-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: transparent;
+            border: 1px solid #444;
+            border-radius: 6px;
+            padding: 6px 12px 6px 14px;
+            color: #ccc;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: border-color 0.25s, color 0.25s, background 0.25s;
+            outline: none;
+            user-select: none;
+            line-height: 1.4;
+        }
+        .lang-btn:hover {
+            border-color: #d93a3a;
+            color: #fff;
+            background: rgba(217, 58, 58, 0.08);
+        }
+        .lang-btn .arrow {
+            transition: transform 0.25s ease;
+            fill: #888;
+            width: 10px;
+            height: 10px;
+            flex-shrink: 0;
+        }
+        .lang-btn.open .arrow {
+            transform: rotate(180deg);
+        }
+
+        .lang-dropdown {
+            position: absolute;
+            right: 0;
+            top: calc(100% + 6px);
+            min-width: 110px;
+            background: #1e1e1e;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 4px 0;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-4px) scale(0.96);
+            transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+            transform-origin: top right;
+        }
+        .lang-dropdown.open {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+        .lang-option {
+            display: block;
+            padding: 7px 18px;
+            color: #bbb;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+            border: none;
+            background: transparent;
+            width: 100%;
+            text-align: left;
+            line-height: 1.4;
+        }
+        .lang-option:hover {
+            background: #2a2a2a;
+            color: #fff;
+        }
+        .lang-option.active {
+            color: #d93a3a;
+            position: relative;
+        }
+        .lang-option.active::before {
+            content: "✓";
+            margin-right: 8px;
+            font-weight: 600;
+            color: #d93a3a;
+        }
+        .lang-option:not(.active)::before {
+            content: "";
+            margin-right: 20px;
+            display: inline-block;
+        }
+
+        /* --- 头部样式 --- */
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        .header h1 {
+            font-size: 32px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+        .header .subtitle {
+            font-size: 14px;
+            color: #888888;
+        }
+        .header .project-badge {
+            display: inline-block;
+            padding: 4px 16px;
+            background-color: #d93a3a;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #fff;
+            margin-top: 8px;
+        }
+
+        /* --- 导航网格布局 --- */
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+
+        /* --- 卡片样式 --- */
+        .nav-card {
+            background-color: #1e1e1e;
+            border: 1px solid #333333;
+            border-radius: 12px;
+            padding: 30px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            position: relative;
+            overflow: hidden;
+        }
+        .nav-card:hover {
+            transform: translateY(-5px);
+            border-color: #555555;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            background-color: #252525;
+        }
+        .icon-box {
+            width: 48px;
+            height: 48px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            fill: #ffffff;
+            transition: fill 0.3s ease;
+        }
+        .card-accent .nav-icon {
+            fill: #d93a3a;
+        }
+        .card-accent .icon-box {
+            background-color: rgba(217, 58, 58, 0.1);
+        }
+        .nav-card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+        .nav-card p {
+            font-size: 13px;
+            color: #999999;
+            line-height: 1.5;
+        }
+
+        /* --- 搜索区域样式 --- */
+        .search-section {
+            background-color: #1e1e1e;
+            border: 1px solid #333333;
+            border-radius: 12px;
+            padding: 40px;
+        }
+        .search-header {
+            margin-bottom: 25px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .search-header svg {
+            fill: #fff;
+            flex-shrink: 0;
+        }
+        .search-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 14px 20px;
+            background-color: #121212;
+            border: 1px solid #333333;
+            border-radius: 6px;
+            color: #ffffff;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        input[type="text"]:focus {
+            border-color: #d93a3a;
+        }
+        input[type="text"]::placeholder {
+            color: #666;
+        }
+        .btn {
+            padding: 0 30px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            transition: background-color 0.3s;
+            white-space: nowrap;
+        }
+        .btn-primary {
+            background-color: #d93a3a;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #c03232;
+        }
+
+        /* --- 搜索结果列表 --- */
+        .results {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .result-card {
+            background-color: #252525;
+            padding: 20px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 3px solid #444;
+            transition: border-color 0.3s;
+        }
+        .result-card:hover {
+            border-left-color: #d93a3a;
+        }
+        .result-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .result-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 6px;
+            word-break: break-word;
+        }
+        .result-meta {
+            font-size: 12px;
+            color: #777;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .result-meta span {
+            white-space: nowrap;
+        }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-shrink: 0;
+            margin-left: 16px;
+        }
+        .action-btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            transition: opacity 0.2s, background 0.2s, border-color 0.2s;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .view-btn {
+            background-color: transparent;
+            border: 1px solid #444;
+            color: #ccc;
+        }
+        .view-btn:hover {
+            border-color: #fff;
+            color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .download-btn {
+            background-color: #333;
+            color: #fff;
+            border: 1px solid transparent;
+        }
+        .download-btn:hover {
+            background-color: #444;
+        }
+        .empty-msg {
+            text-align: center;
+            color: #666;
+            padding: 40px 0;
+            font-size: 14px;
+        }
+        .empty-msg.error {
+            color: #d93a3a;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .top-nav {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .top-nav .brand {
+                justify-content: center;
+            }
+            .top-nav .nav-links {
+                justify-content: center;
+            }
+            .search-container {
+                flex-direction: column;
+            }
+            .btn {
+                width: 100%;
+                padding: 14px;
+            }
+            .result-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            .btn-group {
+                width: 100%;
+                margin-left: 0;
+            }
+            .action-btn {
+                flex: 1;
+                text-align: center;
+            }
+            .result-meta span {
+                white-space: normal;
+            }
+        }
+        @media (max-width: 480px) {
+            .nav-grid {
+                grid-template-columns: 1fr;
+            }
+            .search-section {
+                padding: 20px;
+            }
+            .header h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- 顶部导航 -->
+        <div class="top-nav">
+            <div class="brand">
+                <svg class="brand-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                <span id="brandText">IronMastiff</span>
+            </div>
+            <div class="nav-links">
+                <a href="/IronMastiff/IM-file-list.html" id="allResourcesLink">All Resources</a>
+                <a href="/" class="btn-home" id="homeLink">Home</a>
+                <!-- 语言切换 -->
+                <div class="lang-switch">
+                    <button class="lang-btn" id="langBtn" aria-haspopup="true" aria-expanded="false">
+                        <span id="currentLangText">English</span>
+                        <svg class="arrow" viewBox="0 0 10 10" aria-hidden="true">
+                            <path d="M5 7L0 2h10z" />
+                        </svg>
+                    </button>
+                    <div class="lang-dropdown" id="langDropdown" role="menu">
+                        <button class="lang-option active" data-lang="en" role="menuitem">English</button>
+                        <button class="lang-option" data-lang="zh" role="menuitem">中文</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 头部 -->
+        <div class="header">
+            <h1 id="pageTitle">IronMastiff - Product Documentation & Resource Center</h1>
+            <p class="subtitle" id="pageSubtitle">IronMastiff project dedicated document library</p>
+            <span class="project-badge" id="projectBadge">IronMastiff</span>
+        </div>
+
+        <!-- 导航网格 -->
+        <div class="nav-grid">
+            <a href="/IronMastiff/IM-product.html" class="nav-card card-accent" id="card1">
+                <div class="icon-box">
+                    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                </div>
+                <h3 id="card1Title">Product Documentation</h3>
+                <p id="card1Desc">View product specifications, performance metrics and detailed parameters</p>
+            </a>
+
+            <a href="/IronMastiff/IM-protocol.html" class="nav-card" id="card2">
+                <div class="icon-box">
+                    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 3c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm5 13.5L13 13v-2l5-2.5v6zm-10 0v-6l5 2.5v2l-5 3.5zM12 1L2 6v2l10-5 10 5V6l-10-5z"/></svg>
+                </div>
+                <h3 id="card2Title">Policies & Agreements</h3>
+                <p id="card2Desc">Terms of service, privacy policy and open source licenses</p>
+            </a>
+
+            <a href="/IronMastiff/IM-software.html" class="nav-card" id="card3">
+                <div class="icon-box">
+                    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                </div>
+                <h3 id="card3Title">Software Downloads</h3>
+                <p id="card3Desc">Get the latest SDKs, drivers and debugging tools</p>
+            </a>
+
+            <a href="/IronMastiff/IM-development.html" class="nav-card" id="card4">
+                <div class="icon-box">
+                    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg>
+                </div>
+                <h3 id="card4Title">Development Files</h3>
+                <p id="card4Desc">API documentation, technical whitepapers and integration guides</p>
+            </a>
+
+            <a href="/IronMastiff/IM-usage.html" class="nav-card" id="card5">
+                <div class="icon-box">
+                    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg>
+                </div>
+                <h3 id="card5Title">User Manuals</h3>
+                <p id="card5Desc">Quick start, operation guides and FAQs</p>
+            </a>
+
+            <a href="/IronMastiff/IM-video.html" class="nav-card" id="card6">
+                <div class="icon-box">
+                    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                </div>
+                <h3 id="card6Title">Video Tutorials</h3>
+                <p id="card6Desc">Watch official demos and in-depth training courses</p>
+            </a>
+        </div>
+
+        <!-- 搜索区域 -->
+        <div class="search-section">
+            <div class="search-header">
+                <svg style="width:20px; height:20px;" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                </svg>
+                <span id="searchTitle">IronMastiff Project File Search</span>
+            </div>
+            
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search IronMastiff project files (filename, category or extension)..." />
+                <button class="btn btn-primary" id="searchBtn">Search</button>
+            </div>
+
+            <div id="searchResults" class="results">
+                <p class="empty-msg" id="emptyMsg">Enter keywords to search IronMastiff project files...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        //  1. 翻译字典
+        // ============================================================
+        const LANG = {
+            en: {
+                brand: 'IronMastiff',
+                allResources: 'All Resources',
+                home: 'Home',
+                pageTitle: 'IronMastiff - Product Documentation & Resource Center',
+                pageSubtitle: 'IronMastiff project dedicated document library',
+                projectBadge: 'IronMastiff',
+                card1Title: 'Product Documentation',
+                card1Desc: 'View product specifications, performance metrics and detailed parameters',
+                card2Title: 'Policies & Agreements',
+                card2Desc: 'Terms of service, privacy policy and open source licenses',
+                card3Title: 'Software Downloads',
+                card3Desc: 'Get the latest SDKs, drivers and debugging tools',
+                card4Title: 'Development Files',
+                card4Desc: 'API documentation, technical whitepapers and integration guides',
+                card5Title: 'User Manuals',
+                card5Desc: 'Quick start, operation guides and FAQs',
+                card6Title: 'Video Tutorials',
+                card6Desc: 'Watch official demos and in-depth training courses',
+                searchTitle: 'IronMastiff Project File Search',
+                searchPlaceholder: 'Search IronMastiff project files (filename, category or extension)...',
+                searchBtn: 'Search',
+                emptyMsg: 'Enter keywords to search IronMastiff project files...',
+                emptySearch: 'Please enter a search keyword',
+                loading: 'Connecting to server...',
+                noResults: 'No matching files found',
+                error: 'Search service temporarily unavailable, please try again later',
+                fieldCategory: 'Category',
+                fieldSize: 'Size',
+                fieldType: 'Type',
+                btnPreview: 'Preview',
+                btnDownload: 'Download',
+                langZh: '中文',
+                langEn: 'English',
+                htmlTitle: 'IronMastiff - Product Documentation & Resource Center'
+            },
+            zh: {
+                brand: '铁獒',
+                allResources: '全部资源',
+                home: '返回首页',
+                pageTitle: '铁獒 - 产品文档与资源中心',
+                pageSubtitle: 'IronMastiff 项目专用文档库',
+                projectBadge: 'IronMastiff',
+                card1Title: '产品介绍文件',
+                card1Desc: '查看产品规格、性能指标与详细参数',
+                card2Title: '协议与政策',
+                card2Desc: '用户服务协议、隐私政策与开源许可',
+                card3Title: '开发软件下载',
+                card3Desc: '获取最新的 SDK、驱动程序与调试工具',
+                card4Title: '开发文件',
+                card4Desc: 'API 接口文档、技术白皮书与集成指南',
+                card5Title: '产品使用手册',
+                card5Desc: '快速入门、操作指南与常见问题解答',
+                card6Title: '视频教程',
+                card6Desc: '观看官方演示视频与深度教学课程',
+                searchTitle: '铁獒项目文件检索',
+                searchPlaceholder: '搜索 IronMastiff 项目文件（文件名、分类或后缀）...',
+                searchBtn: '立即搜索',
+                emptyMsg: '输入关键词开始检索铁獒项目文件...',
+                emptySearch: '请输入搜索关键词',
+                loading: '正在连接服务器检索...',
+                noResults: '未找到匹配的文件',
+                error: '检索服务暂时不可用，请稍后再试',
+                fieldCategory: '分类',
+                fieldSize: '大小',
+                fieldType: '类型',
+                btnPreview: '预览',
+                btnDownload: '下载',
+                langZh: '中文',
+                langEn: 'English',
+                htmlTitle: '铁獒 - 产品文档与资源中心'
+            }
+        };
+
+        // ============================================================
+        //  2. 状态
+        // ============================================================
+        let currentLang = 'en'; // 默认英语
+        let lastSearchData = null;
+        let lastSearchTerm = '';
+        let dropdownOpen = false;
+
+        // ============================================================
+        //  3. DOM 引用
+        // ============================================================
+        const $ = (id) => document.getElementById(id);
+        const brandText = $('brandText');
+        const allResourcesLink = $('allResourcesLink');
+        const homeLink = $('homeLink');
+        const pageTitle = $('pageTitle');
+        const pageSubtitle = $('pageSubtitle');
+        const projectBadge = $('projectBadge');
+        const card1Title = $('card1Title');
+        const card1Desc = $('card1Desc');
+        const card2Title = $('card2Title');
+        const card2Desc = $('card2Desc');
+        const card3Title = $('card3Title');
+        const card3Desc = $('card3Desc');
+        const card4Title = $('card4Title');
+        const card4Desc = $('card4Desc');
+        const card5Title = $('card5Title');
+        const card5Desc = $('card5Desc');
+        const card6Title = $('card6Title');
+        const card6Desc = $('card6Desc');
+        const searchTitle = $('searchTitle');
+        const searchInput = $('searchInput');
+        const searchBtn = $('searchBtn');
+        const resultsDiv = $('searchResults');
+        const emptyMsg = $('emptyMsg');
+        const langBtn = $('langBtn');
+        const currentLangText = $('currentLangText');
+        const langDropdown = $('langDropdown');
+        const langOptions = langDropdown.querySelectorAll('.lang-option');
+
+        // ============================================================
+        //  4. 核心翻译函数
+        // ============================================================
+        function t(key) {
+            return LANG[currentLang]?.[key] ?? LANG.en[key] ?? key;
+        }
+
+        // ============================================================
+        //  5. 更新所有 UI 文本 (静态部分)
+        // ============================================================
+        function updateUI() {
+            document.title = t('htmlTitle');
+            brandText.textContent = t('brand');
+            allResourcesLink.textContent = t('allResources');
+            homeLink.textContent = t('home');
+            pageTitle.textContent = t('pageTitle');
+            pageSubtitle.textContent = t('pageSubtitle');
+            projectBadge.textContent = t('projectBadge');
+            card1Title.textContent = t('card1Title');
+            card1Desc.textContent = t('card1Desc');
+            card2Title.textContent = t('card2Title');
+            card2Desc.textContent = t('card2Desc');
+            card3Title.textContent = t('card3Title');
+            card3Desc.textContent = t('card3Desc');
+            card4Title.textContent = t('card4Title');
+            card4Desc.textContent = t('card4Desc');
+            card5Title.textContent = t('card5Title');
+            card5Desc.textContent = t('card5Desc');
+            card6Title.textContent = t('card6Title');
+            card6Desc.textContent = t('card6Desc');
+            searchTitle.textContent = t('searchTitle');
+            searchInput.placeholder = t('searchPlaceholder');
+            searchBtn.textContent = t('searchBtn');
+            currentLangText.textContent = currentLang === 'en' ? t('langEn') : t('langZh');
+
+            // 更新下拉选项激活状态
+            langOptions.forEach(opt => {
+                const lang = opt.dataset.lang;
+                opt.textContent = lang === 'en' ? t('langEn') : t('langZh');
+                opt.classList.toggle('active', lang === currentLang);
+            });
+
+            document.documentElement.lang = currentLang === 'en' ? 'en' : 'zh-CN';
+
+            // 重新渲染搜索结果（如果有缓存）
+            if (lastSearchData !== null) {
+                renderResults(lastSearchData);
+            } else if (!lastSearchTerm) {
+                // 初始空状态
+                const empty = resultsDiv.querySelector('.empty-msg');
+                if (empty) {
+                    empty.textContent = t('emptyMsg');
+                } else {
+                    resultsDiv.innerHTML = `<p class="empty-msg">${t('emptyMsg')}</p>`;
+                }
+            }
+        }
+
+        // ============================================================
+        //  6. 渲染搜索结果 (使用当前语言)
+        // ============================================================
+        function renderResults(data) {
+            if (!data || data.length === 0) {
+                resultsDiv.innerHTML = `<p class="empty-msg">${t('noResults')}</p>`;
+                return;
+            }
+            resultsDiv.innerHTML = data.map(file => `
+                <div class="result-card">
+                    <div class="result-info">
+                        <div class="result-title">${escapeHtml(file.title)}</div>
+                        <div class="result-meta">
+                            <span>${t('fieldCategory')}：${escapeHtml(file.category)}</span>
+                            <span>${t('fieldSize')}：${escapeHtml(file.size)}</span>
+                            <span>${t('fieldType')}：${escapeHtml(file.ext)}</span>
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <a href="${escapeHtml(file.file_path)}" target="_blank" class="action-btn view-btn">${t('btnPreview')}</a>
+                        <a href="/api/download?folder=${escapeHtml(file.folder)}&filename=${encodeURIComponent(file.title)}" class="action-btn download-btn">${t('btnDownload')}</a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ============================================================
+        //  7. 搜索函数 (保留原逻辑，增加翻译)
+        // ============================================================
+        const PROJECT_NAME = 'IronMastiff';
+
+        async function performProjectSearch() {
+            const searchTerm = searchInput.value.trim();
+            lastSearchTerm = searchTerm;
+
+            if (!searchTerm) {
+                resultsDiv.innerHTML = `<p class="empty-msg">${t('emptySearch')}</p>`;
+                lastSearchData = null;
+                return;
+            }
+
+            resultsDiv.innerHTML = `<p class="empty-msg">${t('loading')}</p>`;
+
+            try {
+                const params = new URLSearchParams({
+                    q: searchTerm,
+                    project: PROJECT_NAME
+                });
+                const response = await fetch(`/api/project-search?${params.toString()}`);
+                const result = await response.json();
+
+                if (result.success && result.data && result.data.length > 0) {
+                    lastSearchData = result.data;
+                    renderResults(lastSearchData);
+                } else {
+                    lastSearchData = [];
+                    resultsDiv.innerHTML = `<p class="empty-msg">${t('noResults')}</p>`;
+                }
+            } catch (error) {
+                console.error(error);
+                lastSearchData = null;
+                resultsDiv.innerHTML = `<p class="empty-msg error">${t('error')}</p>`;
+            }
+        }
+
+        // ============================================================
+        //  8. 语言切换（使用统一键名 'lang'）
+        // ============================================================
+        function switchLanguage(lang) {
+            if (lang === currentLang) {
+                closeDropdown();
+                return;
+            }
+            currentLang = lang;
+            localStorage.setItem('lang', lang);
+            updateUI();
+            closeDropdown();
+            langBtn.setAttribute('aria-expanded', 'false');
+        }
+
+        // ============================================================
+        //  9. 下拉菜单控制
+        // ============================================================
+        function toggleDropdown(e) {
+            e.stopPropagation();
+            dropdownOpen = !dropdownOpen;
+            langDropdown.classList.toggle('open', dropdownOpen);
+            langBtn.classList.toggle('open', dropdownOpen);
+            langBtn.setAttribute('aria-expanded', dropdownOpen);
+        }
+
+        function closeDropdown() {
+            dropdownOpen = false;
+            langDropdown.classList.remove('open');
+            langBtn.classList.remove('open');
+            langBtn.setAttribute('aria-expanded', 'false');
+        }
+
+        // ============================================================
+        //  10. 工具函数
+        // ============================================================
+        function escapeHtml(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // ============================================================
+        //  11. 事件绑定
+        // ============================================================
+        langBtn.addEventListener('click', toggleDropdown);
+
+        langOptions.forEach(opt => {
+            opt.addEventListener('click', function(e) {
+                e.stopPropagation();
+                switchLanguage(this.dataset.lang);
+            });
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.lang-switch') && dropdownOpen) {
+                closeDropdown();
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && dropdownOpen) {
+                closeDropdown();
+                langBtn.focus();
+            }
+        });
+
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') performProjectSearch();
+        });
+
+        searchBtn.addEventListener('click', performProjectSearch);
+
+        // ============================================================
+        //  12. 初始化 (默认英语)
+        // ============================================================
+        (function init() {
+            // 从 localStorage 读取偏好（默认英语）
+            const saved = localStorage.getItem('lang');
+            if (saved === 'en' || saved === 'zh') {
+                currentLang = saved;
+            } else {
+                currentLang = 'en';
+            }
+            // 应用语言
+            updateUI();
+            closeDropdown();
+            // 确保空状态文本正确
+            const empty = resultsDiv.querySelector('.empty-msg');
+            if (empty && !lastSearchTerm) {
+                empty.textContent = t('emptyMsg');
+            }
+        })();
+    </script>
+</body>
+</html>
