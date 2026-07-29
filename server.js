@@ -11,6 +11,11 @@ const PORT = 3000;
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/files', express.static(path.join(__dirname, 'files')));
 
+// 处理根路径，返回 index.html
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
 const FILES_DIR = path.join(__dirname, 'files');
 
 // 确保项目目录存在
