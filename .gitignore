@@ -1,0 +1,4 @@
+node_modules/
+blog.db-shm
+blog.db-wal
+*.db
