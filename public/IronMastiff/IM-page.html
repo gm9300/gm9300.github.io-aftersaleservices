@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IronMastiff - Product Documentation & Resource Center</title>
+    <title>IronMastiff - Product Docs & Resource Center</title>
     <style>
-        /* --- 全局重置与基础样式 --- */
+        /* 与 IM-page.html 相同样式，颜色主题为蓝色系 */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -28,7 +28,6 @@
             max-width: 1100px;
         }
 
-        /* --- 顶部导航栏 --- */
         .top-nav {
             display: flex;
             justify-content: space-between;
@@ -44,15 +43,7 @@
         .top-nav .brand {
             font-size: 20px;
             font-weight: 600;
-            color: #d93a3a;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .top-nav .brand .brand-icon {
-            width: 24px;
-            height: 24px;
-            fill: #d93a3a;
+            color: #3498db;
         }
         .top-nav .nav-links {
             display: flex;
@@ -65,9 +56,6 @@
             text-decoration: none;
             font-size: 14px;
             transition: color 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
         }
         .top-nav .nav-links a:hover {
             color: #fff;
@@ -82,100 +70,74 @@
             background-color: #444;
         }
 
-        /* --- 语言切换 (深色主题) --- */
-        .lang-switch {
+        .lang-switcher {
             position: relative;
-            z-index: 100;
+            flex-shrink: 0;
         }
         .lang-btn {
             display: flex;
             align-items: center;
             gap: 6px;
-            background: transparent;
+            padding: 6px 14px;
+            background: #2a2a2a;
             border: 1px solid #444;
             border-radius: 6px;
-            padding: 6px 12px 6px 14px;
-            color: #ccc;
             font-size: 13px;
             font-weight: 500;
+            color: #e0e0e0;
             cursor: pointer;
-            transition: border-color 0.25s, color 0.25s, background 0.25s;
-            outline: none;
+            transition: background 0.15s, border-color 0.15s;
             user-select: none;
-            line-height: 1.4;
+            font-family: inherit;
         }
         .lang-btn:hover {
-            border-color: #d93a3a;
-            color: #fff;
-            background: rgba(217, 58, 58, 0.08);
+            background: #333;
+            border-color: #666;
         }
         .lang-btn .arrow {
-            transition: transform 0.25s ease;
-            fill: #888;
-            width: 10px;
-            height: 10px;
-            flex-shrink: 0;
+            font-size: 11px;
+            color: #888;
+            transition: transform 0.2s;
         }
         .lang-btn.open .arrow {
             transform: rotate(180deg);
         }
-
-        .lang-dropdown {
+        .lang-menu {
             position: absolute;
-            right: 0;
             top: calc(100% + 6px);
-            min-width: 110px;
+            right: 0;
+            min-width: 100px;
             background: #1e1e1e;
-            border: 1px solid #333;
+            border: 1px solid #444;
             border-radius: 8px;
-            padding: 4px 0;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-4px) scale(0.96);
-            transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
-            transform-origin: top right;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+            padding: 6px 0;
+            display: none;
+            z-index: 200;
+            overflow: hidden;
         }
-        .lang-dropdown.open {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0) scale(1);
-        }
-        .lang-option {
+        .lang-menu.show {
             display: block;
-            padding: 7px 18px;
-            color: #bbb;
+        }
+        .lang-menu a {
+            display: block;
+            padding: 8px 18px;
             font-size: 13px;
-            font-weight: 500;
+            color: #d0d0d0;
+            text-decoration: none;
             cursor: pointer;
-            transition: background 0.15s, color 0.15s;
-            border: none;
-            background: transparent;
-            width: 100%;
-            text-align: left;
-            line-height: 1.4;
+            transition: background 0.12s;
+            font-weight: 450;
         }
-        .lang-option:hover {
+        .lang-menu a:hover {
             background: #2a2a2a;
+        }
+        .lang-menu a.active {
+            background: #333;
             color: #fff;
-        }
-        .lang-option.active {
-            color: #d93a3a;
-            position: relative;
-        }
-        .lang-option.active::before {
-            content: "✓";
-            margin-right: 8px;
             font-weight: 600;
-            color: #d93a3a;
-        }
-        .lang-option:not(.active)::before {
-            content: "";
-            margin-right: 20px;
-            display: inline-block;
         }
 
-        /* --- 头部样式 --- */
         .header {
             text-align: center;
             margin-bottom: 50px;
@@ -194,7 +156,7 @@
         .header .project-badge {
             display: inline-block;
             padding: 4px 16px;
-            background-color: #d93a3a;
+            background-color: #3498db;
             border-radius: 20px;
             font-size: 12px;
             font-weight: 600;
@@ -202,7 +164,6 @@
             margin-top: 8px;
         }
 
-        /* --- 导航网格布局 --- */
         .nav-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -210,7 +171,6 @@
             margin-bottom: 60px;
         }
 
-        /* --- 卡片样式 --- */
         .nav-card {
             background-color: #1e1e1e;
             border: 1px solid #333333;
@@ -248,10 +208,10 @@
             transition: fill 0.3s ease;
         }
         .card-accent .nav-icon {
-            fill: #d93a3a;
+            fill: #3498db;
         }
         .card-accent .icon-box {
-            background-color: rgba(217, 58, 58, 0.1);
+            background-color: rgba(52, 152, 219, 0.1);
         }
         .nav-card h3 {
             font-size: 18px;
@@ -265,7 +225,6 @@
             line-height: 1.5;
         }
 
-        /* --- 搜索区域样式 --- */
         .search-section {
             background-color: #1e1e1e;
             border: 1px solid #333333;
@@ -282,8 +241,9 @@
             gap: 10px;
         }
         .search-header svg {
+            width: 20px;
+            height: 20px;
             fill: #fff;
-            flex-shrink: 0;
         }
         .search-container {
             display: flex;
@@ -302,10 +262,7 @@
             transition: border-color 0.3s;
         }
         input[type="text"]:focus {
-            border-color: #d93a3a;
-        }
-        input[type="text"]::placeholder {
-            color: #666;
+            border-color: #3498db;
         }
         .btn {
             padding: 0 30px;
@@ -315,17 +272,15 @@
             font-size: 15px;
             font-weight: 500;
             transition: background-color 0.3s;
-            white-space: nowrap;
         }
         .btn-primary {
-            background-color: #d93a3a;
+            background-color: #3498db;
             color: white;
         }
         .btn-primary:hover {
-            background-color: #c03232;
+            background-color: #2980b9;
         }
 
-        /* --- 搜索结果列表 --- */
         .results {
             display: flex;
             flex-direction: column;
@@ -342,18 +297,16 @@
             transition: border-color 0.3s;
         }
         .result-card:hover {
-            border-left-color: #d93a3a;
+            border-left-color: #3498db;
         }
         .result-info {
             flex: 1;
-            min-width: 0;
         }
         .result-title {
             font-size: 16px;
             font-weight: 600;
             color: #fff;
             margin-bottom: 6px;
-            word-break: break-word;
         }
         .result-meta {
             font-size: 12px;
@@ -362,14 +315,13 @@
             gap: 15px;
             flex-wrap: wrap;
         }
-        .result-meta span {
-            white-space: nowrap;
+        .result-meta .label {
+            color: #999;
         }
         .btn-group {
             display: flex;
             gap: 10px;
             flex-shrink: 0;
-            margin-left: 16px;
         }
         .action-btn {
             padding: 8px 16px;
@@ -377,12 +329,7 @@
             text-decoration: none;
             font-size: 13px;
             font-weight: 500;
-            transition: opacity 0.2s, background 0.2s, border-color 0.2s;
-            cursor: pointer;
-            border: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
+            transition: opacity 0.2s;
         }
         .view-btn {
             background-color: transparent;
@@ -392,12 +339,10 @@
         .view-btn:hover {
             border-color: #fff;
             color: #fff;
-            background: rgba(255, 255, 255, 0.05);
         }
         .download-btn {
             background-color: #333;
             color: #fff;
-            border: 1px solid transparent;
         }
         .download-btn:hover {
             background-color: #444;
@@ -412,17 +357,14 @@
             color: #d93a3a;
         }
 
-        /* 响应式调整 */
         @media (max-width: 768px) {
             .top-nav {
                 flex-direction: column;
-                align-items: stretch;
-            }
-            .top-nav .brand {
-                justify-content: center;
+                align-items: flex-start;
             }
             .top-nav .nav-links {
-                justify-content: center;
+                width: 100%;
+                justify-content: flex-start;
             }
             .search-container {
                 flex-direction: column;
@@ -438,14 +380,10 @@
             }
             .btn-group {
                 width: 100%;
-                margin-left: 0;
             }
             .action-btn {
                 flex: 1;
                 text-align: center;
-            }
-            .result-meta span {
-                white-space: normal;
             }
         }
         @media (max-width: 480px) {
@@ -455,396 +393,178 @@
             .search-section {
                 padding: 20px;
             }
-            .header h1 {
-                font-size: 24px;
-            }
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <!-- 顶部导航 -->
         <div class="top-nav">
-            <div class="brand">
-                <svg class="brand-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-                <span id="brandText">IronMastiff</span>
-            </div>
+            <div class="brand" id="brandName" data-i18n="brand">IronMastiff</div>
             <div class="nav-links">
-                <a href="/IronMastiff/IM-file-list.html" id="allResourcesLink">All Resources</a>
-                <a href="/" class="btn-home" id="homeLink">Home</a>
-                <!-- 语言切换 -->
-                <div class="lang-switch">
-                    <button class="lang-btn" id="langBtn" aria-haspopup="true" aria-expanded="false">
-                        <span id="currentLangText">English</span>
-                        <svg class="arrow" viewBox="0 0 10 10" aria-hidden="true">
-                            <path d="M5 7L0 2h10z" />
-                        </svg>
+                <a href="IM-file-list.html" id="allResourcesLink" data-i18n="allResources">All Resources</a>
+                <a href="/" class="btn-home" id="homeLink" data-i18n="homeLink">← Home</a>
+                <div class="lang-switcher">
+                    <button class="lang-btn" id="langBtn" onclick="toggleLangMenu()" aria-label="切换语言">
+                        <span id="currentLangLabel">EN</span>
+                        <span class="arrow">▾</span>
                     </button>
-                    <div class="lang-dropdown" id="langDropdown" role="menu">
-                        <button class="lang-option active" data-lang="en" role="menuitem">English</button>
-                        <button class="lang-option" data-lang="zh" role="menuitem">中文</button>
+                    <div class="lang-menu" id="langMenu">
+                        <a href="#" onclick="setLang('zh')" data-lang="zh">中文</a>
+                        <a href="#" onclick="setLang('en')" data-lang="en">English</a>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- 头部 -->
         <div class="header">
-            <h1 id="pageTitle">IronMastiff - Product Documentation & Resource Center</h1>
-            <p class="subtitle" id="pageSubtitle">IronMastiff project dedicated document library</p>
-            <span class="project-badge" id="projectBadge">IronMastiff</span>
+            <h1 id="pageTitle" data-i18n="pageTitle">IronMastiff – Product Docs &amp; Resource Center</h1>
+            <p class="subtitle" id="pageSubtitle" data-i18n="subtitle">Dedicated document library for IronMastiff project</p>
+            <span class="project-badge">IronMastiff</span>
         </div>
 
-        <!-- 导航网格 -->
         <div class="nav-grid">
-            <a href="/IronMastiff/IM-product.html" class="nav-card card-accent" id="card1">
+            <a href="IM-product.html" class="nav-card card-accent">
                 <div class="icon-box">
                     <svg class="nav-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
                 </div>
-                <h3 id="card1Title">Product Documentation</h3>
-                <p id="card1Desc">View product specifications, performance metrics and detailed parameters</p>
+                <h3 data-i18n="card_product_title">Product Documentation</h3>
+                <p data-i18n="card_product_desc">View product specs, performance metrics &amp; detailed parameters</p>
             </a>
 
-            <a href="/IronMastiff/IM-protocol.html" class="nav-card" id="card2">
+            <a href="IM-protocol.html" class="nav-card">
                 <div class="icon-box">
                     <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 3c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm5 13.5L13 13v-2l5-2.5v6zm-10 0v-6l5 2.5v2l-5 3.5zM12 1L2 6v2l10-5 10 5V6l-10-5z"/></svg>
                 </div>
-                <h3 id="card2Title">Policies & Agreements</h3>
-                <p id="card2Desc">Terms of service, privacy policy and open source licenses</p>
+                <h3 data-i18n="card_protocol_title">Policies &amp; Agreements</h3>
+                <p data-i18n="card_protocol_desc">User agreement, privacy policy &amp; open source licenses</p>
             </a>
 
-            <a href="/IronMastiff/IM-software.html" class="nav-card" id="card3">
+            <a href="IM-software.html" class="nav-card">
                 <div class="icon-box">
                     <svg class="nav-icon" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
                 </div>
-                <h3 id="card3Title">Software Downloads</h3>
-                <p id="card3Desc">Get the latest SDKs, drivers and debugging tools</p>
+                <h3 data-i18n="card_software_title">Software Downloads</h3>
+                <p data-i18n="card_software_desc">Get latest SDKs, drivers &amp; debugging tools</p>
             </a>
 
-            <a href="/IronMastiff/IM-development.html" class="nav-card" id="card4">
+            <a href="IM-development.html" class="nav-card">
                 <div class="icon-box">
                     <svg class="nav-icon" viewBox="0 0 24 24"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg>
                 </div>
-                <h3 id="card4Title">Development Files</h3>
-                <p id="card4Desc">API documentation, technical whitepapers and integration guides</p>
+                <h3 data-i18n="card_development_title">Development Files</h3>
+                <p data-i18n="card_development_desc">API documentation, technical white papers &amp; integration guides</p>
             </a>
 
-            <a href="/IronMastiff/IM-usage.html" class="nav-card" id="card5">
+            <a href="IM-usage.html" class="nav-card">
                 <div class="icon-box">
                     <svg class="nav-icon" viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg>
                 </div>
-                <h3 id="card5Title">User Manuals</h3>
-                <p id="card5Desc">Quick start, operation guides and FAQs</p>
+                <h3 data-i18n="card_usage_title">User Manuals</h3>
+                <p data-i18n="card_usage_desc">Quick start, operation guides &amp; FAQ</p>
             </a>
 
-            <a href="/IronMastiff/IM-video.html" class="nav-card" id="card6">
+            <a href="IM-video.html" class="nav-card">
                 <div class="icon-box">
                     <svg class="nav-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                 </div>
-                <h3 id="card6Title">Video Tutorials</h3>
-                <p id="card6Desc">Watch official demos and in-depth training courses</p>
+                <h3 data-i18n="card_video_title">Video Tutorials</h3>
+                <p data-i18n="card_video_desc">Watch official demos &amp; in-depth training courses</p>
             </a>
         </div>
 
-        <!-- 搜索区域 -->
         <div class="search-section">
             <div class="search-header">
-                <svg style="width:20px; height:20px;" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-                </svg>
-                <span id="searchTitle">IronMastiff Project File Search</span>
+                <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                <span id="searchTitle" data-i18n="searchTitle">IronMastiff Project File Search</span>
             </div>
-            
             <div class="search-container">
-                <input type="text" id="searchInput" placeholder="Search IronMastiff project files (filename, category or extension)..." />
-                <button class="btn btn-primary" id="searchBtn">Search</button>
+                <input type="text" id="searchInput" placeholder="Search IronMastiff project files (name, category or extension)..." data-i18n-placeholder="searchPlaceholder" />
+                <button class="btn btn-primary" id="searchBtn" data-i18n="searchBtn">Search</button>
             </div>
-
             <div id="searchResults" class="results">
-                <p class="empty-msg" id="emptyMsg">Enter keywords to search IronMastiff project files...</p>
+                <p class="empty-msg" id="searchInitMsg" data-i18n="searchInit">Enter a keyword to start searching...</p>
             </div>
         </div>
     </div>
 
     <script>
-        // ============================================================
-        //  1. 翻译字典
-        // ============================================================
-        const LANG = {
+        const I18N = {
             en: {
                 brand: 'IronMastiff',
                 allResources: 'All Resources',
-                home: 'Home',
-                pageTitle: 'IronMastiff - Product Documentation & Resource Center',
-                pageSubtitle: 'IronMastiff project dedicated document library',
-                projectBadge: 'IronMastiff',
-                card1Title: 'Product Documentation',
-                card1Desc: 'View product specifications, performance metrics and detailed parameters',
-                card2Title: 'Policies & Agreements',
-                card2Desc: 'Terms of service, privacy policy and open source licenses',
-                card3Title: 'Software Downloads',
-                card3Desc: 'Get the latest SDKs, drivers and debugging tools',
-                card4Title: 'Development Files',
-                card4Desc: 'API documentation, technical whitepapers and integration guides',
-                card5Title: 'User Manuals',
-                card5Desc: 'Quick start, operation guides and FAQs',
-                card6Title: 'Video Tutorials',
-                card6Desc: 'Watch official demos and in-depth training courses',
+                homeLink: '← Home',
+                pageTitle: 'IronMastiff – Product Docs & Resource Center',
+                subtitle: 'Dedicated document library for IronMastiff project',
+                card_product_title: 'Product Documentation',
+                card_product_desc: 'View product specs, performance metrics & detailed parameters',
+                card_protocol_title: 'Policies & Agreements',
+                card_protocol_desc: 'User agreement, privacy policy & open source licenses',
+                card_software_title: 'Software Downloads',
+                card_software_desc: 'Get latest SDKs, drivers & debugging tools',
+                card_development_title: 'Development Files',
+                card_development_desc: 'API documentation, technical white papers & integration guides',
+                card_usage_title: 'User Manuals',
+                card_usage_desc: 'Quick start, operation guides & FAQ',
+                card_video_title: 'Video Tutorials',
+                card_video_desc: 'Watch official demos & in-depth training courses',
                 searchTitle: 'IronMastiff Project File Search',
-                searchPlaceholder: 'Search IronMastiff project files (filename, category or extension)...',
+                searchPlaceholder: 'Search IronMastiff project files (name, category or extension)...',
                 searchBtn: 'Search',
-                emptyMsg: 'Enter keywords to search IronMastiff project files...',
-                emptySearch: 'Please enter a search keyword',
-                loading: 'Connecting to server...',
-                noResults: 'No matching files found',
-                error: 'Search service temporarily unavailable, please try again later',
-                fieldCategory: 'Category',
-                fieldSize: 'Size',
-                fieldType: 'Type',
-                btnPreview: 'Preview',
-                btnDownload: 'Download',
-                langZh: '中文',
-                langEn: 'English',
-                htmlTitle: 'IronMastiff - Product Documentation & Resource Center'
+                searchInit: 'Enter a keyword to start searching...',
+                searchEmpty: 'Please enter a search keyword',
+                searchNoResults: 'No matching files found',
+                searchError: 'Search service temporarily unavailable, please try again later',
+                resultCategory: 'Category',
+                resultSize: 'Size',
+                resultType: 'Type',
+                preview: 'Preview',
+                download: 'Download',
             },
             zh: {
                 brand: '铁獒',
                 allResources: '全部资源',
-                home: '返回首页',
+                homeLink: '← 返回首页',
                 pageTitle: '铁獒 - 产品文档与资源中心',
-                pageSubtitle: 'IronMastiff 项目专用文档库',
-                projectBadge: 'IronMastiff',
-                card1Title: '产品介绍文件',
-                card1Desc: '查看产品规格、性能指标与详细参数',
-                card2Title: '协议与政策',
-                card2Desc: '用户服务协议、隐私政策与开源许可',
-                card3Title: '开发软件下载',
-                card3Desc: '获取最新的 SDK、驱动程序与调试工具',
-                card4Title: '开发文件',
-                card4Desc: 'API 接口文档、技术白皮书与集成指南',
-                card5Title: '产品使用手册',
-                card5Desc: '快速入门、操作指南与常见问题解答',
-                card6Title: '视频教程',
-                card6Desc: '观看官方演示视频与深度教学课程',
+                subtitle: 'IronMastiff 项目专用文档库',
+                card_product_title: '产品介绍文件',
+                card_product_desc: '查看产品规格、性能指标与详细参数',
+                card_protocol_title: '协议与政策',
+                card_protocol_desc: '用户服务协议、隐私政策与开源许可',
+                card_software_title: '开发软件下载',
+                card_software_desc: '获取最新的 SDK、驱动程序与调试工具',
+                card_development_title: '开发文件',
+                card_development_desc: 'API 接口文档、技术白皮书与集成指南',
+                card_usage_title: '产品使用手册',
+                card_usage_desc: '快速入门、操作指南与常见问题解答',
+                card_video_title: '视频教程',
+                card_video_desc: '观看官方演示视频与深度教学课程',
                 searchTitle: '铁獒项目文件检索',
                 searchPlaceholder: '搜索 IronMastiff 项目文件（文件名、分类或后缀）...',
                 searchBtn: '立即搜索',
-                emptyMsg: '输入关键词开始检索铁獒项目文件...',
-                emptySearch: '请输入搜索关键词',
-                loading: '正在连接服务器检索...',
-                noResults: '未找到匹配的文件',
-                error: '检索服务暂时不可用，请稍后再试',
-                fieldCategory: '分类',
-                fieldSize: '大小',
-                fieldType: '类型',
-                btnPreview: '预览',
-                btnDownload: '下载',
-                langZh: '中文',
-                langEn: 'English',
-                htmlTitle: '铁獒 - 产品文档与资源中心'
+                searchInit: '输入关键词开始检索铁獒项目文件...',
+                searchEmpty: '请输入搜索关键词',
+                searchNoResults: '未找到匹配的文件',
+                searchError: '检索服务暂时不可用，请稍后再试',
+                resultCategory: '分类',
+                resultSize: '大小',
+                resultType: '类型',
+                preview: '预览',
+                download: '下载',
             }
         };
 
-        // ============================================================
-        //  2. 状态
-        // ============================================================
-        let currentLang = 'en'; // 默认英语
-        let lastSearchData = null;
-        let lastSearchTerm = '';
-        let dropdownOpen = false;
+        let currentLang = 'en';
+        let currentSearchTerm = '';
 
-        // ============================================================
-        //  3. DOM 引用
-        // ============================================================
-        const $ = (id) => document.getElementById(id);
-        const brandText = $('brandText');
-        const allResourcesLink = $('allResourcesLink');
-        const homeLink = $('homeLink');
-        const pageTitle = $('pageTitle');
-        const pageSubtitle = $('pageSubtitle');
-        const projectBadge = $('projectBadge');
-        const card1Title = $('card1Title');
-        const card1Desc = $('card1Desc');
-        const card2Title = $('card2Title');
-        const card2Desc = $('card2Desc');
-        const card3Title = $('card3Title');
-        const card3Desc = $('card3Desc');
-        const card4Title = $('card4Title');
-        const card4Desc = $('card4Desc');
-        const card5Title = $('card5Title');
-        const card5Desc = $('card5Desc');
-        const card6Title = $('card6Title');
-        const card6Desc = $('card6Desc');
-        const searchTitle = $('searchTitle');
-        const searchInput = $('searchInput');
-        const searchBtn = $('searchBtn');
-        const resultsDiv = $('searchResults');
-        const emptyMsg = $('emptyMsg');
-        const langBtn = $('langBtn');
-        const currentLangText = $('currentLangText');
-        const langDropdown = $('langDropdown');
-        const langOptions = langDropdown.querySelectorAll('.lang-option');
-
-        // ============================================================
-        //  4. 核心翻译函数
-        // ============================================================
         function t(key) {
-            return LANG[currentLang]?.[key] ?? LANG.en[key] ?? key;
+            return I18N[currentLang]?.[key] || key;
         }
 
-        // ============================================================
-        //  5. 更新所有 UI 文本 (静态部分)
-        // ============================================================
-        function updateUI() {
-            document.title = t('htmlTitle');
-            brandText.textContent = t('brand');
-            allResourcesLink.textContent = t('allResources');
-            homeLink.textContent = t('home');
-            pageTitle.textContent = t('pageTitle');
-            pageSubtitle.textContent = t('pageSubtitle');
-            projectBadge.textContent = t('projectBadge');
-            card1Title.textContent = t('card1Title');
-            card1Desc.textContent = t('card1Desc');
-            card2Title.textContent = t('card2Title');
-            card2Desc.textContent = t('card2Desc');
-            card3Title.textContent = t('card3Title');
-            card3Desc.textContent = t('card3Desc');
-            card4Title.textContent = t('card4Title');
-            card4Desc.textContent = t('card4Desc');
-            card5Title.textContent = t('card5Title');
-            card5Desc.textContent = t('card5Desc');
-            card6Title.textContent = t('card6Title');
-            card6Desc.textContent = t('card6Desc');
-            searchTitle.textContent = t('searchTitle');
-            searchInput.placeholder = t('searchPlaceholder');
-            searchBtn.textContent = t('searchBtn');
-            currentLangText.textContent = currentLang === 'en' ? t('langEn') : t('langZh');
-
-            // 更新下拉选项激活状态
-            langOptions.forEach(opt => {
-                const lang = opt.dataset.lang;
-                opt.textContent = lang === 'en' ? t('langEn') : t('langZh');
-                opt.classList.toggle('active', lang === currentLang);
-            });
-
-            document.documentElement.lang = currentLang === 'en' ? 'en' : 'zh-CN';
-
-            // 重新渲染搜索结果（如果有缓存）
-            if (lastSearchData !== null) {
-                renderResults(lastSearchData);
-            } else if (!lastSearchTerm) {
-                // 初始空状态
-                const empty = resultsDiv.querySelector('.empty-msg');
-                if (empty) {
-                    empty.textContent = t('emptyMsg');
-                } else {
-                    resultsDiv.innerHTML = `<p class="empty-msg">${t('emptyMsg')}</p>`;
-                }
-            }
+        function getLangLabel() {
+            return currentLang === 'en' ? 'EN' : '中文';
         }
 
-        // ============================================================
-        //  6. 渲染搜索结果 (使用当前语言)
-        // ============================================================
-        function renderResults(data) {
-            if (!data || data.length === 0) {
-                resultsDiv.innerHTML = `<p class="empty-msg">${t('noResults')}</p>`;
-                return;
-            }
-            resultsDiv.innerHTML = data.map(file => `
-                <div class="result-card">
-                    <div class="result-info">
-                        <div class="result-title">${escapeHtml(file.title)}</div>
-                        <div class="result-meta">
-                            <span>${t('fieldCategory')}：${escapeHtml(file.category)}</span>
-                            <span>${t('fieldSize')}：${escapeHtml(file.size)}</span>
-                            <span>${t('fieldType')}：${escapeHtml(file.ext)}</span>
-                        </div>
-                    </div>
-                    <div class="btn-group">
-                        <a href="${escapeHtml(file.file_path)}" target="_blank" class="action-btn view-btn">${t('btnPreview')}</a>
-                        <a href="/api/download?folder=${escapeHtml(file.folder)}&filename=${encodeURIComponent(file.title)}" class="action-btn download-btn">${t('btnDownload')}</a>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // ============================================================
-        //  7. 搜索函数 (保留原逻辑，增加翻译)
-        // ============================================================
-        const PROJECT_NAME = 'IronMastiff';
-
-        async function performProjectSearch() {
-            const searchTerm = searchInput.value.trim();
-            lastSearchTerm = searchTerm;
-
-            if (!searchTerm) {
-                resultsDiv.innerHTML = `<p class="empty-msg">${t('emptySearch')}</p>`;
-                lastSearchData = null;
-                return;
-            }
-
-            resultsDiv.innerHTML = `<p class="empty-msg">${t('loading')}</p>`;
-
-            try {
-                const params = new URLSearchParams({
-                    q: searchTerm,
-                    project: PROJECT_NAME
-                });
-                const response = await fetch(`/api/project-search?${params.toString()}`);
-                const result = await response.json();
-
-                if (result.success && result.data && result.data.length > 0) {
-                    lastSearchData = result.data;
-                    renderResults(lastSearchData);
-                } else {
-                    lastSearchData = [];
-                    resultsDiv.innerHTML = `<p class="empty-msg">${t('noResults')}</p>`;
-                }
-            } catch (error) {
-                console.error(error);
-                lastSearchData = null;
-                resultsDiv.innerHTML = `<p class="empty-msg error">${t('error')}</p>`;
-            }
-        }
-
-        // ============================================================
-        //  8. 语言切换（使用统一键名 'lang'）
-        // ============================================================
-        function switchLanguage(lang) {
-            if (lang === currentLang) {
-                closeDropdown();
-                return;
-            }
-            currentLang = lang;
-            localStorage.setItem('lang', lang);
-            updateUI();
-            closeDropdown();
-            langBtn.setAttribute('aria-expanded', 'false');
-        }
-
-        // ============================================================
-        //  9. 下拉菜单控制
-        // ============================================================
-        function toggleDropdown(e) {
-            e.stopPropagation();
-            dropdownOpen = !dropdownOpen;
-            langDropdown.classList.toggle('open', dropdownOpen);
-            langBtn.classList.toggle('open', dropdownOpen);
-            langBtn.setAttribute('aria-expanded', dropdownOpen);
-        }
-
-        function closeDropdown() {
-            dropdownOpen = false;
-            langDropdown.classList.remove('open');
-            langBtn.classList.remove('open');
-            langBtn.setAttribute('aria-expanded', 'false');
-        }
-
-        // ============================================================
-        //  10. 工具函数
-        // ============================================================
         function escapeHtml(str) {
             if (!str) return '';
             const div = document.createElement('div');
@@ -852,57 +572,148 @@
             return div.innerHTML;
         }
 
-        // ============================================================
-        //  11. 事件绑定
-        // ============================================================
-        langBtn.addEventListener('click', toggleDropdown);
+        function setLang(lang) {
+            if (lang === currentLang) {
+                closeLangMenu();
+                return;
+            }
+            currentLang = lang;
+            localStorage.setItem('ironmastiff_lang', lang);
+            renderStaticTexts();
+            if (currentSearchTerm && document.getElementById('searchInput').value.trim()) {
+                performProjectSearch(true);
+            }
+            closeLangMenu();
+        }
 
-        langOptions.forEach(opt => {
-            opt.addEventListener('click', function(e) {
-                e.stopPropagation();
-                switchLanguage(this.dataset.lang);
-            });
-        });
+        function toggleLangMenu() {
+            const menu = document.getElementById('langMenu');
+            const btn = document.getElementById('langBtn');
+            menu.classList.toggle('show');
+            btn.classList.toggle('open');
+        }
+
+        function closeLangMenu() {
+            const menu = document.getElementById('langMenu');
+            const btn = document.getElementById('langBtn');
+            menu.classList.remove('show');
+            btn.classList.remove('open');
+        }
 
         document.addEventListener('click', function(e) {
-            if (!e.target.closest('.lang-switch') && dropdownOpen) {
-                closeDropdown();
+            const switcher = document.querySelector('.lang-switcher');
+            if (switcher && !switcher.contains(e.target)) {
+                closeLangMenu();
             }
         });
 
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && dropdownOpen) {
-                closeDropdown();
-                langBtn.focus();
+        function renderStaticTexts() {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                let val = t(key);
+                if (val !== undefined) {
+                    if (el.hasChildNodes() && el.children.length > 0) {
+                        let textNodeFound = false;
+                        el.childNodes.forEach(node => {
+                            if (node.nodeType === Node.TEXT_NODE && node.textContent.trim() !== '') {
+                                node.textContent = val;
+                                textNodeFound = true;
+                            }
+                        });
+                        if (!textNodeFound) {
+                            el.appendChild(document.createTextNode(val));
+                        }
+                    } else {
+                        el.textContent = val;
+                    }
+                }
+            });
+            const searchInput = document.getElementById('searchInput');
+            const phKey = searchInput.getAttribute('data-i18n-placeholder');
+            if (phKey) {
+                searchInput.placeholder = t(phKey);
             }
-        });
+            document.getElementById('currentLangLabel').textContent = getLangLabel();
+            document.querySelectorAll('.lang-menu a').forEach(a => {
+                const lang = a.getAttribute('data-lang');
+                a.classList.toggle('active', lang === currentLang);
+            });
+        }
 
-        searchInput.addEventListener('keypress', function(e) {
+        document.getElementById('searchInput').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') performProjectSearch();
         });
+        document.getElementById('searchBtn').addEventListener('click', performProjectSearch);
 
-        searchBtn.addEventListener('click', performProjectSearch);
+        async function performProjectSearch(silent = false) {
+            const searchTerm = document.getElementById('searchInput').value.trim();
+            const resultsDiv = document.getElementById('searchResults');
+            currentSearchTerm = searchTerm;
 
-        // ============================================================
-        //  12. 初始化 (默认英语)
-        // ============================================================
-        (function init() {
-            // 从 localStorage 读取偏好（默认英语）
-            const saved = localStorage.getItem('lang');
-            if (saved === 'en' || saved === 'zh') {
+            if (!searchTerm) {
+                resultsDiv.innerHTML = `<p class="empty-msg">${t('searchEmpty')}</p>`;
+                return;
+            }
+            if (!silent) {
+                resultsDiv.innerHTML = `<p class="empty-msg">${t('searchInit')}</p>`;
+            } else {
+                resultsDiv.innerHTML = `<p class="empty-msg">${t('searchInit')}</p>`;
+            }
+
+            try {
+                const params = new URLSearchParams({
+                    q: searchTerm,
+                    project: 'IronMastiff'
+                });
+                const response = await fetch(`/api/project-search?${params.toString()}`);
+                const result = await response.json();
+
+                if (result.success && result.data && result.data.length > 0) {
+                    const categoryLabel = t('resultCategory');
+                    const sizeLabel = t('resultSize');
+                    const typeLabel = t('resultType');
+                    const previewText = t('preview');
+                    const downloadText = t('download');
+
+                    resultsDiv.innerHTML = result.data.map(file => `
+                        <div class="result-card">
+                            <div class="result-info">
+                                <div class="result-title">${escapeHtml(file.title)}</div>
+                                <div class="result-meta">
+                                    <span><span class="label">${categoryLabel}:</span> ${escapeHtml(file.category)}</span>
+                                    <span><span class="label">${sizeLabel}:</span> ${escapeHtml(file.size)}</span>
+                                    <span><span class="label">${typeLabel}:</span> ${escapeHtml(file.ext)}</span>
+                                </div>
+                            </div>
+                            <div class="btn-group">
+                                <a href="${escapeHtml(file.file_path)}" target="_blank" class="action-btn view-btn">${previewText}</a>
+                                <a href="/api/download?folder=${escapeHtml(file.folder)}&filename=${encodeURIComponent(file.title)}" class="action-btn download-btn">${downloadText}</a>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    resultsDiv.innerHTML = `<p class="empty-msg">${t('searchNoResults')}</p>`;
+                }
+            } catch (error) {
+                console.error(error);
+                resultsDiv.innerHTML = `<p class="empty-msg error">${t('searchError')}</p>`;
+            }
+        }
+
+        window.onload = function() {
+            const saved = localStorage.getItem('ironmastiff_lang');
+            if (saved === 'zh' || saved === 'en') {
                 currentLang = saved;
             } else {
                 currentLang = 'en';
             }
-            // 应用语言
-            updateUI();
-            closeDropdown();
-            // 确保空状态文本正确
-            const empty = resultsDiv.querySelector('.empty-msg');
-            if (empty && !lastSearchTerm) {
-                empty.textContent = t('emptyMsg');
-            }
-        })();
+            renderStaticTexts();
+            document.getElementById('searchResults').innerHTML = `<p class="empty-msg">${t('searchInit')}</p>`;
+        };
+
+        window.setLang = setLang;
+        window.toggleLangMenu = toggleLangMenu;
+        window.performProjectSearch = performProjectSearch;
     </script>
 </body>
 </html>
